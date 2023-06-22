@@ -10,7 +10,7 @@ import {Municipio} from './Municipio';
         @Column({name: 'Sigla', type:'varchar2'})
             Sigla: string;
         
-        @Column({name:'Nome_Municipio', type:'varchar'})
+        @Column({name:'Nome', type:'varchar'})
             Nome:string;
         
         @Column({name:'Status', type:'int'})
