@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
 
 import {Municipio} from './Municipio';
 
-@Entity('Tb_UF')
+@Entity('Tb_Uf')
     export class UF{
         @PrimaryGeneratedColumn({name: 'Codigo_UF', type: 'int'})
             Codigo_UF: number;
