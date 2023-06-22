@@ -1,23 +1,36 @@
 {
   "name": "back-end",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "Back-end de uma API-Restfull, com typescript, com os dados sendo gravado no banco de dados Oracle ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts",
-    "build": "tsc"
+    "dev" :"ts-node-dev --transpile-only --ignore-watch node_modules src/Servidor.ts",
+    "migration:generate": "typeorm-ts-node-commonjs -d ./src/data-source.ts migration:generate ./src/migrations/default",
+    "migration:run": "typeorm-ts-node-commonjs -d ./src/data-source.ts migration:run"
+
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabrielNathan12/bootcamp-node-squadra.git"
+  },
+  "author": "Gabriel Nathan",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GabrielNathan12/bootcamp-node-squadra/issues"
+  },
+  "homepage": "https://github.com/GabrielNathan12/bootcamp-node-squadra#readme",
   "dependencies": {
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "oracledb": "^5.5.0",
-    "pg": "^8.11.0",
-    "typeorm": "^0.3.16"
+    "oracledb": "^6.0.1",
+    "reflect-metadata": "^0.1.13",
+    "ts-node": "^10.9.1",
+    "typeorm": "^0.3.17"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
+    "@types/node": "^20.3.1",
     "typescript": "^5.1.3"
   }
 }
