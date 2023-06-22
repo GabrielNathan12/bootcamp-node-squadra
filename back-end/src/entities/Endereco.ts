@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, Column, ManyToMany, Entity, JoinColumn } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Bairro } from "./Bairro";
 import { Pessoa } from "./Pessoa";
 
@@ -25,10 +25,10 @@ import { Pessoa } from "./Pessoa";
         @Column({name: 'CEP', type:'varchar'})
             CEP: string;
         
-        @ManyToMany(()=> Pessoa, (pessoa) => pessoa.Enderecos)
+        @ManyToOne(()=> Pessoa, (pessoa) => pessoa.Enderecos)
             @JoinColumn({name: 'Nome_Pessoa'})
                 pessoa: Pessoa;
-        @ManyToMany(() => Bairro, (bairro) => bairro.Municipios)
+        @ManyToOne(() => Bairro, (bairro) => bairro.Municipios)
             @JoinColumn({name: 'Codigo_Bairro'})
                 bairro: Bairro;
     }

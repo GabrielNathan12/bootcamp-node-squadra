@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToMany, PrimaryGeneratedColumn, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from "typeorm";
 import { Municipio } from "./Municipio";
 
 @Entity('Tb_Bairro')
@@ -11,7 +11,7 @@ import { Municipio } from "./Municipio";
             Nome_Bairro: string;
         @Column({name: 'Status', type:'int'})
             Status: number;
-        @ManyToMany(() => Municipio, (municipio) => municipio.Bairros)
+        @ManyToOne(() => Municipio, (municipio) => municipio.Bairros)
             @JoinColumn({name:'Codigo_Municipio'})
                 Municipios: Municipio
     }
