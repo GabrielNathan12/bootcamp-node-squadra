@@ -7,28 +7,22 @@ import { Pessoa } from "./Pessoa";
     export class Endereco{
         @PrimaryGeneratedColumn({name:'Codigo_Endereco', type:'int'})
             Codigo_Endereco: number;
-        @Column({name: 'Codigo_Pessoa', type:'int'})
-            Codigo_Pessoa: number;
-        
-        @Column({name:'Codigo_Bairro', type:'int'})
-            Codigo_Bairro: number;
         
         @Column({name: 'Nome_Rua', type: 'varchar'})
             Nome_Rua: string;
-        
-        @Column({name: 'Numero', type:'int'})
-            Numero_Rua: number;
         
         @Column({name:'Complemento', type: 'varchar', nullable: true})
             Complemento: string;
         
         @Column({name: 'CEP', type:'varchar'})
             CEP: string;
+        @Column({name: 'Status', type:'number'})
+            Status: number;
         
-        @ManyToOne(()=> Pessoa, (pessoa) => pessoa.Enderecos)
+        @ManyToOne(()=> Pessoa, (pessoa) => pessoa.Codigo_Pessoa)
             @JoinColumn({name: 'Nome_Pessoa'})
                 pessoa: Pessoa;
-        @ManyToOne(() => Bairro, (bairro) => bairro.Municipios)
+        @ManyToOne(() => Bairro, (bairro) => bairro.Codigo_Bairro)
             @JoinColumn({name: 'Codigo_Bairro'})
                 bairro: Bairro;
     }

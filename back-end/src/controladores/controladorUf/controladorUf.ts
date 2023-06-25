@@ -7,11 +7,13 @@ export class ControladorUf extends ControladorGeral{
     public async atualizarDado(requisicao: Request, resposta: Response ) {
         const { Sigla, Nome, Status } = requisicao.body;
         const pegarIdUf = parseInt(requisicao.params.iduf);
-
+        
+        
         try{
             const codigo_UF = await ufRepositorio.findOne({where: {Codigo_UF : pegarIdUf}});
             const sigla = await ufRepositorio.findOne({where: {Sigla: Sigla}});
             const nome = await ufRepositorio.findOne({where : {Nome: Nome}});
+            const NStatus = Number(Status);
 
             if(!codigo_UF){
                 return resposta.status(400).json({mensagem : 'Codigo Uf não encontrado'});
@@ -19,6 +21,14 @@ export class ControladorUf extends ControladorGeral{
             if(sigla || nome){
                 return resposta.status(400).json({mensagem: 'Nome ou Sigla já inseridos'});
             }
+
+            if(!this.vericarStatus(NStatus)){
+                return resposta.status(400).json({mensagem: 'Status invalido !'});
+            }
+            if(!this.vericarQtdSiglas(Sigla)){
+                return resposta.status(400).json({mensagem: 'Sigla invalida'});
+            }
+            
             codigo_UF.Sigla =  Sigla   || codigo_UF.Sigla;
             codigo_UF.Nome  =  Nome    || codigo_UF.Nome;
             codigo_UF.Status=  Status  || codigo_UF.Status;
@@ -54,6 +64,8 @@ export class ControladorUf extends ControladorGeral{
         const {Sigla, Nome, Status} = requisicao.body;
 
         try{
+            const NStatus = Number(Status);
+
             if(!Sigla || !Nome || !Status){
                 return resposta.status(400).json({mensagem: "Sigla ou Nome ou Status não encontrados !"});
             }
@@ -67,7 +79,12 @@ export class ControladorUf extends ControladorGeral{
                 if (vericarUmaSigla){
                     return resposta.status(400).json({mensagem: 'Sigla já inserida no banco de dados'});
                 }
-
+                if(!this.vericarStatus(NStatus)){
+                    return resposta.status(400).json({mensagem: 'Status invalido'});
+                }
+                if(!this.vericarQtdSiglas(Sigla)){
+                    return resposta.status(400).json({mensagem: 'Sigla invalida'});
+                }
                 const novoUf = ufRepositorio.create(
                     {
                         Sigla: Sigla,
@@ -84,6 +101,7 @@ export class ControladorUf extends ControladorGeral{
         }
     }
 
+
     public async listarDado(requisicao: Request, resposta: Response ) {
         try{
             const municipios = await ufRepositorio.find({
@@ -96,5 +114,14 @@ export class ControladorUf extends ControladorGeral{
         catch(erro){
             return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro});
         }
+    }
+
+    //Verifica se a quantidade de siglas e valida
+    private vericarQtdSiglas(Sigla: string): Boolean {
+        if(Sigla.length > 2 || Sigla.length <= 0 || Sigla.length == 1){
+            return false;
+        }
+
+        return true;
     }
 }

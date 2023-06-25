@@ -12,6 +12,6 @@ export const AppDataSource = new DataSource({
     password: process.env.DBSENHA,
     port: porta,
     database: process.env.DBDATA,
-    entities: [`${__dirname}/**/entities/*.{ts,js}`],
-    migrations:[`${__dirname}/**/migrations/*.{ts,js}`]
+    entities: [`${__dirname}/**/entidades/*.{ts,js}`],
+    migrations:[`${__dirname}/**/migracoes/*.{ts,js}`]
 })

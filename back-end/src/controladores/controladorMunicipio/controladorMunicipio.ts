@@ -1,100 +1,108 @@
-import { Request, Response } from "express-serve-static-core";
+import { ParamsDictionary, Request, Response } from "express-serve-static-core";
 import { ControladorGeral } from "../ControladorGeral";
+
+import { municipioRepositorio } from "../../repositorios/municipioRepositorio";
 import { ufRepositorio } from "../../repositorios/ufRepositorio";
 
 export class ControladorMunicipio extends ControladorGeral{
+    
     public async removerDado(requisicao: Request, resposta: Response ) {
-        const {Sigla, Nome, Status} = requisicao.body;
+        const deletarPeloId = parseInt(requisicao.params.idmunicipio);
 
         try{
-            if(!Sigla || !Nome || !Status){
-                return resposta.status(400).json({mensagem: "Sigla ou Nome ou Status não encontrados !"});
-            }
-            else {
-                const verificarUmNome = await ufRepositorio.findOne({where : {Nome: Nome} });
-                const vericarUmaSigla = await ufRepositorio.findOne({where: {Sigla: Sigla}});
+            const codigo_Municipio = await municipioRepositorio.findOne({where: {Codigo_Municipio : deletarPeloId}});
 
-                if(verificarUmNome){
-                    return resposta.status(400).json({mensagem: 'Nome já inserido no banco'});
-                }
-                if (vericarUmaSigla){
-                    return resposta.status(400).json({mensagem: 'Sigla já inserida no banco de dados'});
-                }
-
-                const novoUf = ufRepositorio.create(
-                    {
-                        Sigla: Sigla,
-                        Nome: Nome,
-                        Status: Status
-                    }
-                );
-                await ufRepositorio.save(novoUf);
-                return resposta.status(200).json(novoUf);
+            if(!codigo_Municipio){
+                return resposta.status(400).json({mensagem: 'Codigo do municipio não encontrado !'});
             }
+            await municipioRepositorio.remove(codigo_Municipio);
+
+            return resposta.status(200).json({mensagem: 'Deleção completada'});
+
         }
         catch(erro){
-            return resposta.status(200).json();
+            return resposta.status(500).json({mensagem: 'Erro no servidor: ' + erro});
         }
         
     }
+
+    public async listarDado(requisicao: Request, resposta: Response) {
+        try{
+            const municipios = await municipioRepositorio.find({
+                relations: {
+                    Bairros: true
+                }
+            });
+            return resposta.status(200).json(municipios);
+        }
+        catch(erro){
+            return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro});
+        }
+    }
+    
     public async atualizarDado(requisicao: Request, resposta: Response ) {
-        const { Sigla, Nome, Status } = requisicao.body;
-        const pegarIdUf = parseInt(requisicao.params.iduf);
+        const { Nome, Status } = requisicao.body;
+        const pegarIdMunicipio = parseInt(requisicao.params.idmunicipio);
 
         try{
-            const codigo_UF = await ufRepositorio.findOne({where: {Codigo_UF : pegarIdUf}});
-            const sigla = await ufRepositorio.findOne({where: {Sigla: Sigla}});
-            const nome = await ufRepositorio.findOne({where : {Nome: Nome}});
+            const codigo_Municipio = await municipioRepositorio.findOne({where: {Codigo_Municipio : pegarIdMunicipio}});
+            const nome = await municipioRepositorio.findOne({where : {Nome: Nome}});
 
-            if(!codigo_UF){
-                return resposta.status(400).json({mensagem : 'Codigo Uf não encontrado'});
+            if(!codigo_Municipio){
+                return resposta.status(400).json({mensagem : 'Codigo do municipio não encontrado'});
             }
-            if(sigla || nome){
-                return resposta.status(400).json({mensagem: 'Nome ou Sigla já inseridos'});
+            if(nome){
+                return resposta.status(400).json({mensagem: 'Nome do municipio ja inserido'});
             }
-            codigo_UF.Sigla =  Sigla   || codigo_UF.Sigla;
-            codigo_UF.Nome  =  Nome    || codigo_UF.Nome;
-            codigo_UF.Status=  Status  || codigo_UF.Status;
+            if(!this.vericarStatus(Number(Status))){
+                return resposta.status(400).json({mensagem: 'Status invalido !'});
+            }
 
-            const ufAtualizado = await ufRepositorio.save(codigo_UF);
 
-            return resposta.status(200).json({mensagem: ufAtualizado});
+            codigo_Municipio.Nome =  Nome   || codigo_Municipio.Nome;
+            codigo_Municipio.Status=  Status  || codigo_Municipio.Status;
+
+            const municipioAtualizado = await municipioRepositorio.save(codigo_Municipio);
+
+            return resposta.status(200).json({mensagem: municipioAtualizado});
             
         }catch(erro){
             return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro })
         }
     }
-    public async listarDado(requisicao: Request, resposta: Response ) {
-        return resposta.status(200).json();
-    }
 
     public async adionarDado(requisicao: Request, resposta: Response) {
-        const {Sigla, Nome, Status} = requisicao.body;
+        const {Codigo_UF ,Nome, Status} = requisicao.body;
 
         try{
-            if(!Sigla || !Nome || !Status){
+
+            const verificarCodigoUF = await ufRepositorio.findOne({where: {Codigo_UF:Codigo_UF}});
+
+            if(!Nome || !Status || !Codigo_UF){
                 return resposta.status(400).json({mensagem: "Sigla ou Nome ou Status não encontrados !"});
             }
             else {
-                const verificarUmNome = await ufRepositorio.findOne({where : {Nome: Nome} });
-                const vericarUmaSigla = await ufRepositorio.findOne({where: {Sigla: Sigla}});
+                const verificarUmNome = await municipioRepositorio.findOne({where : {Nome: Nome} });
 
+                if(!verificarCodigoUF){
+                    return resposta.status(400).json({mensagem: 'Codigo Uf nao encontrado'});
+                }
                 if(verificarUmNome){
                     return resposta.status(400).json({mensagem: 'Nome já inserido no banco'});
                 }
-                if (vericarUmaSigla){
-                    return resposta.status(400).json({mensagem: 'Sigla já inserida no banco de dados'});
-                }
 
-                const novoUf = ufRepositorio.create(
+                if(!this.vericarStatus(Number(Status))){
+                    return resposta.status(400).json({mensagem: 'Status invalido'});
+                }
+                const novoMunicipio = municipioRepositorio.create(
                     {
-                        Sigla: Sigla,
+                        codigo_UF: Codigo_UF,
                         Nome: Nome,
                         Status: Status
                     }
                 );
-                await ufRepositorio.save(novoUf);
-                return resposta.status(200).json(novoUf);
+                await municipioRepositorio.save(novoMunicipio);
+                return resposta.status(200).json(novoMunicipio);
             }
         }
         catch(erro){

@@ -16,6 +16,6 @@ import {Municipio} from './Municipio';
         @Column({name:'Status', type:'int'})
             Status: number;
         
-        @OneToMany(() => Municipio, (municipio) => municipio.Codigo_UF)
+        @OneToMany(() => Municipio, (municipio) => municipio.codigo_UF)
             Municipios: Municipio[];
     }
