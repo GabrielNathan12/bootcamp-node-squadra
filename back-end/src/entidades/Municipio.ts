@@ -3,21 +3,20 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOn
 import {UF} from './UF';
 import { Bairro } from "./Bairro";
 
-@Entity('Tb_Municipio')
+@Entity('TB_MUNICIPIO')
 
     export class Municipio{
-        @PrimaryGeneratedColumn({name: 'Codigo_Municipio', type:'int'})
-            Codigo_Municipio: number;
-
-        @Column({name: 'Nome', type:'varchar'})
-            Nome: string;
-        @Column({name: 'Status', type:'int'})
-            Status: number;
-        @ManyToOne(() => UF, (codigoUF) => codigoUF.Municipios)
-            @JoinColumn({name: 'Codigo_UF'})
-                codigo_UF: UF;
+        @PrimaryGeneratedColumn({name: 'CODIGO_MUNICIPIO', type:'int'})
+            CODIGO_MUNICIPIO: number;
         
-        @OneToMany(() => Bairro, (bairro) => bairro.Codigo_Municipio)
-            Bairros: Bairro[];
+        @ManyToOne(() => UF, (codigoUF) => codigoUF.MUNICIPIOS)
+        @JoinColumn({name: 'Codigo_UF'})
+            CODIGO_UF: UF;
+        @Column({name: 'NOME', type:'varchar'})
+            NOME: string;
+        @Column({name: 'STATUS', type:'int'})
+            STATUS: number;
+        @OneToMany(() => Bairro, (bairro) => bairro.CODIGO_MUNICIPIO)
+            BAIRROS: Bairro[];
 
     }

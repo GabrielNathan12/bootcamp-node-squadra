@@ -2,20 +2,20 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany} from 'typeorm';
 
 import {Municipio} from './Municipio';
 
-@Entity('Tb_Uf')
+@Entity('TB_UF')
     export class UF{
-        @PrimaryGeneratedColumn({name: 'Codigo_UF', type: 'int'})
-            Codigo_UF: number;
+        @PrimaryGeneratedColumn({name: 'CODIGO_UF', type: 'int'})
+            CODIGO_UF: number;
         
-        @Column({name: 'Sigla', type:'varchar2'})
-            Sigla: string;
+        @Column({name: 'SIGLA', type:'varchar2'})
+            SIGLA: string;
         
-        @Column({name:'Nome', type:'varchar'})
-            Nome:string;
+        @Column({name:'NOME', type:'varchar'})
+            NOME:string;
         
-        @Column({name:'Status', type:'int'})
-            Status: number;
+        @Column({name:'STATUS', type:'int'})
+            STATUS: number;
         
-        @OneToMany(() => Municipio, (municipio) => municipio.codigo_UF)
-            Municipios: Municipio[];
+        @OneToMany(() => Municipio, (municipio) => municipio.CODIGO_UF)
+            MUNICIPIOS: Municipio[];
     }

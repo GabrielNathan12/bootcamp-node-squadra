@@ -1,28 +1,32 @@
-import { PrimaryGeneratedColumn, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { Bairro } from "./Bairro";
 import { Pessoa } from "./Pessoa";
 
 
-@Entity('Tb_Endereco')
+@Entity('TB_ENDERECO')
     export class Endereco{
-        @PrimaryGeneratedColumn({name:'Codigo_Endereco', type:'int'})
-            Codigo_Endereco: number;
+        @PrimaryGeneratedColumn({name:'CODIGO_ENDERECO', type:'int'})
+            CODIGO_ENDERECO: number;
         
-        @Column({name: 'Nome_Rua', type: 'varchar'})
-            Nome_Rua: string;
+        @ManyToOne(()=> Pessoa, (pessoa) => pessoa.ENDERECOS)
+        @JoinColumn({name: 'CODIGO_PESSOA'})
+            PESSOA: Pessoa;
         
-        @Column({name:'Complemento', type: 'varchar', nullable: true})
-            Complemento: string;
+        @OneToOne(() => Bairro, (bairro) => bairro.ENDERECOS)
+        @JoinColumn({name: 'CODIGO_BAIRRO'})
+            BAIRRO: Bairro;
+        
+        @Column({name: 'NOME_RUA', type: 'varchar'})
+            NOME_RUA: string;
+        
+        @Column({name: 'NUMERO', type: 'number'})
+            NUMERO: Number;
+        
+        @Column({name:'COMPLEMENTO', type: 'varchar', nullable: true})
+            COMPLEMENTO: string;
         
         @Column({name: 'CEP', type:'varchar'})
             CEP: string;
         @Column({name: 'Status', type:'number'})
-            Status: number;
-        
-        @ManyToOne(()=> Pessoa, (pessoa) => pessoa.Codigo_Pessoa)
-            @JoinColumn({name: 'Nome_Pessoa'})
-                pessoa: Pessoa;
-        @ManyToOne(() => Bairro, (bairro) => bairro.Codigo_Bairro)
-            @JoinColumn({name: 'Codigo_Bairro'})
-                bairro: Bairro;
+            STATUS: number;
     }

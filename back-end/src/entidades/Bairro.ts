@@ -1,16 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { Municipio } from "./Municipio";
+import { Endereco } from "./Endereco";
 
-@Entity('Tb_Bairro')
+@Entity('Tb_BaiTB_BAIRRO')
     export class Bairro{
-        @PrimaryGeneratedColumn({name: 'Codigo_Bairro', type: 'int'})
-            Codigo_Bairro: number;
-        @Column({name: 'Nome_Bairro', type:'varchar'})
-            Nome_Bairro: string;
-        @Column({name: 'Status', type:'int'})
-            Status: number;
-        
-        @ManyToOne(() => Municipio, (municipio) => municipio.Bairros)
-            @JoinColumn({name:'Codigo_Municipio'})
-                Codigo_Municipio: Municipio
+        @PrimaryGeneratedColumn({name: 'CODIGO_BAIRRO', type: 'int'})
+            CODIGO_BAIRRO: number;
+        @ManyToOne(() => Municipio, (municipio) => municipio.BAIRROS)
+        @JoinColumn({name:'CODIGO_MUNICIPIO'})
+            CODIGO_MUNICIPIO: Municipio;
+        @Column({name: 'NOME', type:'varchar'})
+            NOME: string;
+        @Column({name: 'STATUS', type:'int'})
+            STATUS: number;
+        @OneToOne(() => Endereco, (endereco) => endereco.BAIRRO)
+            ENDERECOS: Endereco;
     }

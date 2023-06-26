@@ -1,39 +1,32 @@
 import { Request, Response } from "express-serve-static-core";
 import { ControladorGeral } from "../ControladorGeral";
-import { ufRepositorio } from "../../repositorios/ufRepositorio";
+import { IRepositorios } from "../../Irepositorios/Irepositorios";
 
 export class ControladorUf extends ControladorGeral{
+    private repositorio = this.repositorios.ufRepositorio;
 
+   
     public async atualizarDado(requisicao: Request, resposta: Response ) {
-        const { Sigla, Nome, Status } = requisicao.body;
+        const { sigla, nome, status } = requisicao.body;
         const pegarIdUf = parseInt(requisicao.params.iduf);
         
-        
         try{
-            const codigo_UF = await ufRepositorio.findOne({where: {Codigo_UF : pegarIdUf}});
-            const sigla = await ufRepositorio.findOne({where: {Sigla: Sigla}});
-            const nome = await ufRepositorio.findOne({where : {Nome: Nome}});
-            const NStatus = Number(Status);
+            const codigo_UF = await this.repositorio.findOne({where: {CODIGO_UF : pegarIdUf}});
+            const sigla_UF = await this.repositorio.findOne({where: {SIGLA: sigla}});
+            const nome_UF = await this.repositorio.findOne({where : {NOME: nome}});
 
             if(!codigo_UF){
                 return resposta.status(400).json({mensagem : 'Codigo Uf não encontrado'});
             }
-            if(sigla || nome){
+            if(sigla_UF || nome_UF){
                 return resposta.status(400).json({mensagem: 'Nome ou Sigla já inseridos'});
             }
 
-            if(!this.vericarStatus(NStatus)){
-                return resposta.status(400).json({mensagem: 'Status invalido !'});
-            }
-            if(!this.vericarQtdSiglas(Sigla)){
-                return resposta.status(400).json({mensagem: 'Sigla invalida'});
-            }
-            
-            codigo_UF.Sigla =  Sigla   || codigo_UF.Sigla;
-            codigo_UF.Nome  =  Nome    || codigo_UF.Nome;
-            codigo_UF.Status=  Status  || codigo_UF.Status;
+            codigo_UF.SIGLA =  sigla   || codigo_UF.SIGLA;
+            codigo_UF.NOME  =  nome    || codigo_UF.NOME;
+            codigo_UF.STATUS=  status  || codigo_UF.STATUS;
 
-            const ufAtualizado = await ufRepositorio.save(codigo_UF);
+            const ufAtualizado = await this.repositorio.save(codigo_UF);
 
             return resposta.status(200).json({mensagem: ufAtualizado});
             
@@ -41,16 +34,17 @@ export class ControladorUf extends ControladorGeral{
             return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro })
         }
     }
+    
     public async removerDado(requisicao: Request, resposta: Response ) {
         const deletarPeloId = parseInt(requisicao.params.iduf);
 
         try{
-            const codigo_Uf = await ufRepositorio.findOne({where: {Codigo_UF : deletarPeloId}});
+            const codigo_Uf = await this.repositorio.findOne({where: {CODIGO_UF : deletarPeloId}});
 
             if(!codigo_Uf){
                 return resposta.status(400).json({mensagem: 'Codigo Uf não encontrado !'});
             }
-            await ufRepositorio.remove(codigo_Uf);
+            await this.repositorio.remove(codigo_Uf);
 
             return resposta.status(200).json({mensagem: 'Deleção completada'});
 
@@ -61,17 +55,16 @@ export class ControladorUf extends ControladorGeral{
     }
 
     public async adionarDado(requisicao: Request, resposta: Response) {
-        const {Sigla, Nome, Status} = requisicao.body;
-
+        const {sigla, nome, status} = requisicao.body;
+        
         try{
-            const NStatus = Number(Status);
 
-            if(!Sigla || !Nome || !Status){
-                return resposta.status(400).json({mensagem: "Sigla ou Nome ou Status não encontrados !"});
+            if(!sigla || !nome || !status){
+                return resposta.status(400).json({mensagem: "Sigla ou Nome ou Status não encontrados no Json !"});
             }
             else {
-                const verificarUmNome = await ufRepositorio.findOne({where : {Nome: Nome} });
-                const vericarUmaSigla = await ufRepositorio.findOne({where: {Sigla: Sigla}});
+                const verificarUmNome = await this.repositorio.findOne({where : {NOME: nome} });
+                const vericarUmaSigla = await this.repositorio.findOne({where: {SIGLA: sigla}});
 
                 if(verificarUmNome){
                     return resposta.status(400).json({mensagem: 'Nome já inserido no banco'});
@@ -79,34 +72,29 @@ export class ControladorUf extends ControladorGeral{
                 if (vericarUmaSigla){
                     return resposta.status(400).json({mensagem: 'Sigla já inserida no banco de dados'});
                 }
-                if(!this.vericarStatus(NStatus)){
-                    return resposta.status(400).json({mensagem: 'Status invalido'});
-                }
-                if(!this.vericarQtdSiglas(Sigla)){
-                    return resposta.status(400).json({mensagem: 'Sigla invalida'});
-                }
-                const novoUf = ufRepositorio.create(
+               
+                const novoUf = this.repositorio.create(
                     {
-                        Sigla: Sigla,
-                        Nome: Nome,
-                        Status: Status
+                        SIGLA: sigla,
+                        NOME: nome,
+                        STATUS: status
                     }
                 );
-                await ufRepositorio.save(novoUf);
+                await this.repositorio.save(novoUf);
                 return resposta.status(200).json(novoUf);
             }
         }
         catch(erro){
-            return resposta.status(200).json();
+            return resposta.status(500).json({mensagem: "Erro interno no servidor: " + erro});
         }
     }
 
 
     public async listarDado(requisicao: Request, resposta: Response ) {
         try{
-            const municipios = await ufRepositorio.find({
+            const municipios = await this.repositorio.find({
                 relations: {
-                    Municipios: true
+                    MUNICIPIOS: true
                 }
             });
             return resposta.status(200).json(municipios);

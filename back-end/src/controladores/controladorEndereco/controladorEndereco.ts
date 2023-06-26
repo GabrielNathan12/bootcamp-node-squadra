@@ -1,18 +1,21 @@
-import { Request, Response } from "express-serve-static-core";
+import { Request, Response } from "express";
 import { ControladorGeral } from "../ControladorGeral";
-import { enderecoRepositorio } from "../../repositorios/enderecosRepositorio";
+import { pessoaRepositorio } from "../../repositorios/pessoaRepositorio";
+import { bairroRepositorio } from "../../repositorios/bairroRepositorio";
 
 export class ControladorEndereco extends ControladorGeral{
+    private repositorio = this.repositorios.enderecoRepositorio;
+    
     public async removerDado(requisicao: Request, resposta: Response ) {
         const deletarPeloId = parseInt(requisicao.params.idendereco);
 
         try{
-            const codigo_endero = await enderecoRepositorio.findOne({where: {Codigo_Endereco : deletarPeloId}});
+            const codigo_endero = await this.repositorio.findOne({where: {CODIGO_ENDERECO : deletarPeloId}});
 
             if(!codigo_endero){
                 return resposta.status(400).json({mensagem: 'Codigo da pessoa não encontrado !'});
             }
-            await enderecoRepositorio.remove(codigo_endero);
+            await this.repositorio.remove(codigo_endero);
 
             return resposta.status(200).json({mensagem: 'Deleção completada'});
 
@@ -25,7 +28,7 @@ export class ControladorEndereco extends ControladorGeral{
 
     public async listarDado(requisicao: Request, resposta: Response) {
         try{
-            const enderecos = await enderecoRepositorio.find();
+            const enderecos = await this.repositorio.find();
 
             return resposta.status(200).json(enderecos);
         }
@@ -35,26 +38,29 @@ export class ControladorEndereco extends ControladorGeral{
     }
     
     public async atualizarDado(requisicao: Request, resposta: Response ) {
-        const { Nome_Rua, Complemento, CEP , Status } = requisicao.body;
+        const { codigo_pessoa, bairro, nome , numero, complemento, CEP, status } = requisicao.body;
         const pegarIdEndereco = parseInt(requisicao.params.idendereco);
         
         try{
-            const codigo_endereco = await enderecoRepositorio.findOne({where: {Codigo_Endereco : pegarIdEndereco}});
+            const codigo_endereco = await this.repositorio.findOne({where: {CODIGO_ENDERECO : pegarIdEndereco}});
 
             if(!codigo_endereco){
                 return resposta.status(400).json({mensagem : 'Codigo do enderco não encontrado'});
             }
-            if(!this.vericarStatus(Number(Status))){
+            if(!this.vericarStatus(Number(status))){
                 return resposta.status(400).json({mensagem: 'Status invalido !'});
             }
 
 
-            codigo_endereco.Nome_Rua =  Nome_Rua   || codigo_endereco.Nome_Rua;
-            codigo_endereco.Complemento = Complemento || codigo_endereco.Complemento;
+            codigo_endereco.PESSOA =  codigo_pessoa   || codigo_endereco.PESSOA;
+            codigo_endereco.BAIRRO = bairro || codigo_endereco.BAIRRO;
+            codigo_endereco.NOME_RUA = nome || codigo_endereco.NOME_RUA;
+            codigo_endereco.NUMERO =  numero  || codigo_endereco.NUMERO;
+            codigo_endereco.COMPLEMENTO = complemento || codigo_endereco.COMPLEMENTO;
             codigo_endereco.CEP = CEP || codigo_endereco.CEP;
-            codigo_endereco.Status=  Status  || codigo_endereco.Status;
+            codigo_endereco.STATUS = status || codigo_endereco.STATUS;
 
-            const enderecoAtualizada = await enderecoRepositorio.save(codigo_endereco);
+            const enderecoAtualizada = await this.repositorio.save(codigo_endereco);
 
             return resposta.status(200).json({mensagem: enderecoAtualizada});
             
@@ -64,32 +70,37 @@ export class ControladorEndereco extends ControladorGeral{
     }
 
     public async adionarDado(requisicao: Request, resposta: Response) {
-        const { Nome_Rua, Complemento, CEP , Status } = requisicao.body;
+        const { codigo_pessoa, nome_bairro ,nome_rua, numero,complemento ,CEP , status } = requisicao.body;
 
         try{
 
-            if(!Nome_Rua || !Status || !CEP || !Complemento ){
-                return resposta.status(400).json({mensagem: "Nome não encontrados !"});
+            const verificaCodPessoa = await pessoaRepositorio.findOne({where: {CODIGO_PESSOA: codigo_pessoa}});
+            const vericaCodBairro = await bairroRepositorio.findOne({where: {NOME: nome_bairro}});
+
+            if(!nome_rua || !status || !CEP || !complemento || !codigo_pessoa || !nome_bairro || !numero){
+                return resposta.status(400).json({mensagem: "Dados nao encontrados !"});
             }
             else {
 
-                if(!this.vericarStatus(Number(Status))){
-                    return resposta.status(400).json({mensagem: 'Status invalido'});
+                if(!verificaCodPessoa || !vericaCodBairro){
+                    return resposta.status(400).json({mensagem: "Nome da Pessoa nao encontrado!"});
                 }
-                const novoEndereco = enderecoRepositorio.create(
-                    {
-                        Nome_Rua: Nome_Rua,
-                        CEP: CEP,
-                        Complemento: Complemento,
-                        Status: Status
+                const novoEndereco = this.repositorio.create(
+                    {  
+                        PESSOA: codigo_pessoa,
+                        BAIRRO: nome_bairro,
+                        NOME_RUA: nome_rua,
+                        NUMERO: numero,
+                        COMPLEMENTO: complemento,
+                        STATUS: status
                     }
                 );
-                await enderecoRepositorio.save(novoEndereco);
+                await this.repositorio.save(novoEndereco);
                 return resposta.status(200).json(novoEndereco);
             }
         }
         catch(erro){
-            return resposta.status(200).json();
+            return resposta.status(500).json();
         }
     }
 }
