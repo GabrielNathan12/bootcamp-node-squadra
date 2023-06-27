@@ -1,13 +1,14 @@
-import { ufRepositorio } from "../repositorios/ufRepositorio";
-import { bairroRepositorio } from "../repositorios/bairroRepositorio";
-import { enderecoRepositorio } from "../repositorios/enderecosRepositorio";
-import { municipioRepositorio } from "../repositorios/municipioRepositorio";
-import { pessoaRepositorio } from "../repositorios/pessoaRepositorio";
+import { UF } from "../entidades/UF";
+import { Bairro } from "../entidades/Bairro";
 
+import { Repository } from "typeorm";
+import { Endereco } from "../entidades/Endereco";
+import { Pessoa } from "../entidades/Pessoa";
+import { Municipio } from "../entidades/Municipio";
 export interface IRepositorios{
-    ufRepositorio :    typeof ufRepositorio;
-    bairroRepositorio: typeof bairroRepositorio;
-    enderecoRepositorio: typeof enderecoRepositorio;
-    pessoaReposotorio: typeof pessoaRepositorio;
-    municipioRepositorio: typeof municipioRepositorio;
+    ufRepositorio : Repository<UF>;
+    bairroRepositorio: Repository<Bairro>;
+    enderecoRepositorio: Repository<Endereco>;
+    pessoaRepositorio:  Repository<Pessoa>;
+    municipioRepositorio: Repository<Municipio>;
 }

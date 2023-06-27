@@ -1,21 +1,25 @@
-import { Request, Response } from "express";
+import { Request, Response } from "express-serve-static-core";
 import { ControladorGeral } from "../ControladorGeral";
-import { pessoaRepositorio } from "../../repositorios/pessoaRepositorio";
-import { bairroRepositorio } from "../../repositorios/bairroRepositorio";
+import { IRepositorios } from "../../Irepositorios/Irepositorios";
 
 export class ControladorEndereco extends ControladorGeral{
-    private repositorio = this.repositorios.enderecoRepositorio;
+    private repositorio: IRepositorios;
+
+    constructor(repositorios: IRepositorios) {
+        super();
+        this.repositorio = repositorios;
+    }
     
     public async removerDado(requisicao: Request, resposta: Response ) {
         const deletarPeloId = parseInt(requisicao.params.idendereco);
 
         try{
-            const codigo_endero = await this.repositorio.findOne({where: {CODIGO_ENDERECO : deletarPeloId}});
+            const codigo_endero = await this.repositorio.enderecoRepositorio.findOne({where: {CODIGO_ENDERECO : deletarPeloId}});
 
             if(!codigo_endero){
                 return resposta.status(400).json({mensagem: 'Codigo da pessoa não encontrado !'});
             }
-            await this.repositorio.remove(codigo_endero);
+            await this.repositorio.enderecoRepositorio.remove(codigo_endero);
 
             return resposta.status(200).json({mensagem: 'Deleção completada'});
 
@@ -28,9 +32,9 @@ export class ControladorEndereco extends ControladorGeral{
 
     public async listarDado(requisicao: Request, resposta: Response) {
         try{
-            const enderecos = await this.repositorio.find();
+            const enderecos = await this.repositorio.enderecoRepositorio.find();
 
-            return resposta.status(200).json(enderecos);
+            return resposta.status(200).json([enderecos]);
         }
         catch(erro){
             return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro});
@@ -42,7 +46,7 @@ export class ControladorEndereco extends ControladorGeral{
         const pegarIdEndereco = parseInt(requisicao.params.idendereco);
         
         try{
-            const codigo_endereco = await this.repositorio.findOne({where: {CODIGO_ENDERECO : pegarIdEndereco}});
+            const codigo_endereco = await this.repositorio.enderecoRepositorio.findOne({where: {CODIGO_ENDERECO : pegarIdEndereco}});
 
             if(!codigo_endereco){
                 return resposta.status(400).json({mensagem : 'Codigo do enderco não encontrado'});
@@ -60,7 +64,7 @@ export class ControladorEndereco extends ControladorGeral{
             codigo_endereco.CEP = CEP || codigo_endereco.CEP;
             codigo_endereco.STATUS = status || codigo_endereco.STATUS;
 
-            const enderecoAtualizada = await this.repositorio.save(codigo_endereco);
+            const enderecoAtualizada = await this.repositorio.enderecoRepositorio.save(codigo_endereco);
 
             return resposta.status(200).json({mensagem: enderecoAtualizada});
             
@@ -74,8 +78,8 @@ export class ControladorEndereco extends ControladorGeral{
 
         try{
 
-            const verificaCodPessoa = await pessoaRepositorio.findOne({where: {CODIGO_PESSOA: codigo_pessoa}});
-            const vericaCodBairro = await bairroRepositorio.findOne({where: {NOME: nome_bairro}});
+            const verificaCodPessoa = await this.repositorio.pessoaRepositorio.findOne({where: {CODIGO_PESSOA: codigo_pessoa}});
+            const vericaCodBairro = await this.repositorio.bairroRepositorio.findOne({where: {NOME: nome_bairro}});
 
             if(!nome_rua || !status || !CEP || !complemento || !codigo_pessoa || !nome_bairro || !numero){
                 return resposta.status(400).json({mensagem: "Dados nao encontrados !"});
@@ -85,7 +89,7 @@ export class ControladorEndereco extends ControladorGeral{
                 if(!verificaCodPessoa || !vericaCodBairro){
                     return resposta.status(400).json({mensagem: "Nome da Pessoa nao encontrado!"});
                 }
-                const novoEndereco = this.repositorio.create(
+                const novoEndereco = this.repositorio.enderecoRepositorio.create(
                     {  
                         PESSOA: codigo_pessoa,
                         BAIRRO: nome_bairro,
@@ -95,7 +99,7 @@ export class ControladorEndereco extends ControladorGeral{
                         STATUS: status
                     }
                 );
-                await this.repositorio.save(novoEndereco);
+                await this.repositorio.enderecoRepositorio.save(novoEndereco);
                 return resposta.status(200).json(novoEndereco);
             }
         }

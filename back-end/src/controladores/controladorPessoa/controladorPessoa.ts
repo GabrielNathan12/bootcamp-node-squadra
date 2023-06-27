@@ -1,19 +1,25 @@
 import { Request, Response } from "express-serve-static-core";
 import { ControladorGeral } from "../ControladorGeral";
+import { IRepositorios } from "../../Irepositorios/Irepositorios";
 
 export class ControladorPessoa extends ControladorGeral{
-    private repositorio = this.repositorios.pessoaReposotorio;
+    private repositorio: IRepositorios;
+
+    constructor(repositorios: IRepositorios) {
+        super();
+        this.repositorio = repositorios;
+    }
 
     public async removerDado(requisicao: Request, resposta: Response ) {
         const deletarPeloId = parseInt(requisicao.params.idpessoa);
 
         try{
-            const codigo_pessoa = await this.repositorio.findOne({where: {CODIGO_PESSOA : deletarPeloId}});
+            const codigo_pessoa = await this.repositorio.pessoaRepositorio.findOne({where: {CODIGO_PESSOA : deletarPeloId}});
 
             if(!codigo_pessoa){
                 return resposta.status(400).json({mensagem: 'Codigo da pessoa não encontrado !'});
             }
-            await this.repositorio.remove(codigo_pessoa);
+            await this.repositorio.pessoaRepositorio.remove(codigo_pessoa);
 
             return resposta.status(200).json({mensagem: 'Deleção completada'});
 
@@ -26,7 +32,7 @@ export class ControladorPessoa extends ControladorGeral{
 
     public async listarDado(requisicao: Request, resposta: Response) {
         try{
-            const pessoas = await this.repositorio.find({relations: {ENDERECOS: true}});
+            const pessoas = await this.repositorio.pessoaRepositorio.find({relations: {ENDERECOS: true}});
 
             return resposta.status(200).json(pessoas);
         }
@@ -40,7 +46,7 @@ export class ControladorPessoa extends ControladorGeral{
         const pegarIdPessoa = parseInt(requisicao.params.idpessoa);
 
         try{
-            const codigo_pessoa = await this.repositorio.findOne({where: {CODIGO_PESSOA : pegarIdPessoa}});
+            const codigo_pessoa = await this.repositorio.pessoaRepositorio.findOne({where: {CODIGO_PESSOA : pegarIdPessoa}});
 
             if(!codigo_pessoa){
                 return resposta.status(400).json({mensagem : 'Codigo do bairro não encontrado'});
@@ -58,7 +64,7 @@ export class ControladorPessoa extends ControladorGeral{
             codigo_pessoa.LOGIN = login || codigo_pessoa.LOGIN;
             codigo_pessoa.STATUS=  status  || codigo_pessoa.STATUS;
 
-            const pessoaAtualizada = await this.repositorio.save(codigo_pessoa);
+            const pessoaAtualizada = await this.repositorio.pessoaRepositorio.save(codigo_pessoa);
 
             return resposta.status(200).json({mensagem: pessoaAtualizada});
             
@@ -77,7 +83,7 @@ export class ControladorPessoa extends ControladorGeral{
             }
             else {
 
-                const novaPessoa = this.repositorio.create(
+                const novaPessoa = this.repositorio.pessoaRepositorio.create(
                     {
                         NOME: nome,
                         SOBRENOME: sobrenome,
@@ -88,7 +94,7 @@ export class ControladorPessoa extends ControladorGeral{
                         STATUS: status
                     }
                 );
-                await this.repositorio.save(novaPessoa);
+                await this.repositorio.pessoaRepositorio.save(novaPessoa);
                 return resposta.status(200).json(novaPessoa);
             }
         }
