@@ -16,9 +16,9 @@ export class ControladorUf extends ControladorGeral{
         try{
             
             
-            const codigo_UF = await this.repositorio.ufRepositorio.findOne({where: {CODIGO_UF : pegarIdUf}});
-            const sigla_UF = await this.repositorio.ufRepositorio.findOne({where: {SIGLA: sigla}});
-            const nome_UF = await this.repositorio.ufRepositorio.findOne({where : {NOME: nome}});
+            const codigo_UF = await this.repositorio.ufRepositorio.findOne({where: {codigoUF : pegarIdUf}});
+            const sigla_UF = await this.repositorio.ufRepositorio.findOne({where: {sigla: sigla}});
+            const nome_UF = await this.repositorio.ufRepositorio.findOne({where : {nome: nome}});
 
             if(!codigo_UF){
                 return resposta.status(400).json({mensagem : 'Codigo Uf não encontrado'});
@@ -27,9 +27,9 @@ export class ControladorUf extends ControladorGeral{
                 return resposta.status(400).json({mensagem: 'Nome ou Sigla já inseridos'});
             }
 
-            codigo_UF.SIGLA =  sigla   || codigo_UF.SIGLA;
-            codigo_UF.NOME  =  nome    || codigo_UF.NOME;
-            codigo_UF.STATUS=  status  || codigo_UF.STATUS;
+            codigo_UF.sigla =  sigla   || codigo_UF.sigla;
+            codigo_UF.nome  =  nome    || codigo_UF.nome;
+            codigo_UF.status=  status  || codigo_UF.status;
 
             const ufAtualizado = await this.repositorio.ufRepositorio.save(codigo_UF);
 
@@ -44,7 +44,7 @@ export class ControladorUf extends ControladorGeral{
         const deletarPeloId = parseInt(requisicao.params.iduf);
 
         try{
-            const codigo_Uf = await this.repositorio.ufRepositorio.findOne({where: {CODIGO_UF : deletarPeloId}});
+            const codigo_Uf = await this.repositorio.ufRepositorio.findOne({where: {codigoUF : deletarPeloId}});
 
             if(!codigo_Uf){
                 return resposta.status(400).json({mensagem: 'Codigo Uf não encontrado !'});
@@ -68,8 +68,8 @@ export class ControladorUf extends ControladorGeral{
                 return resposta.status(400).json({mensagem: "Sigla ou Nome ou Status não encontrados no Json !"});
             }
             else {
-                const verificarUmNome = await this.repositorio.ufRepositorio.findOne({where : {NOME: nome} });
-                const vericarUmaSigla = await this.repositorio.ufRepositorio.findOne({where: {SIGLA: sigla}});
+                const verificarUmNome = await this.repositorio.ufRepositorio.findOne({where : {nome: nome} });
+                const vericarUmaSigla = await this.repositorio.ufRepositorio.findOne({where: {sigla: sigla}});
 
                 if(verificarUmNome){
                     return resposta.status(400).json({mensagem: 'Nome já inserido no banco'});
@@ -80,9 +80,9 @@ export class ControladorUf extends ControladorGeral{
                
                 const novoUf = this.repositorio.ufRepositorio.create(
                     {
-                        SIGLA: sigla,
-                        NOME: nome,
-                        STATUS: status
+                        sigla: sigla,
+                        nome: nome,
+                        status: status
                     }
                 );
                 await this.repositorio.ufRepositorio.save(novoUf);
@@ -99,10 +99,10 @@ export class ControladorUf extends ControladorGeral{
         try{
             const municipios = await this.repositorio.ufRepositorio.find({
                 relations: {
-                    MUNICIPIOS: true
+                    municipios: true
                 }
             });
-            return resposta.status(200).json([municipios]);
+            return resposta.status(200).json(municipios);
         }
         catch(erro){
             return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro});

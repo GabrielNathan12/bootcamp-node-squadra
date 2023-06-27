@@ -5,14 +5,14 @@ import { Endereco } from "./Endereco";
 @Entity('Tb_BaiTB_BAIRRO')
     export class Bairro{
         @PrimaryGeneratedColumn({name: 'CODIGO_BAIRRO', type: 'int'})
-            CODIGO_BAIRRO: number;
-        @ManyToOne(() => Municipio, (municipio) => municipio.BAIRROS)
+            codigoBairro: number;
+        @ManyToOne(() => Municipio, (municipio) => municipio.bairros)
         @JoinColumn({name:'CODIGO_MUNICIPIO'})
-            CODIGO_MUNICIPIO: Municipio;
+            codigoMunicipio: Municipio;
         @Column({name: 'NOME', type:'varchar'})
-            NOME: string;
+            nome: string;
         @Column({name: 'STATUS', type:'int'})
-            STATUS: number;
-        @OneToOne(() => Endereco, (endereco) => endereco.BAIRRO)
-            ENDERECOS: Endereco;
+            status: number;
+        @OneToOne(() => Endereco, (endereco) => endereco.bairro)
+            enderecos: Endereco;
     }

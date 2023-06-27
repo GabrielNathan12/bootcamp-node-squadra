@@ -7,16 +7,16 @@ import { Bairro } from "./Bairro";
 
     export class Municipio{
         @PrimaryGeneratedColumn({name: 'CODIGO_MUNICIPIO', type:'int'})
-            CODIGO_MUNICIPIO: number;
+            codigoMunicipio: number;
         
-        @ManyToOne(() => UF, (codigoUF) => codigoUF.MUNICIPIOS)
+        @ManyToOne(() => UF, (codigoUF) => codigoUF.municipios)
         @JoinColumn({name: 'Codigo_UF'})
-            CODIGO_UF: UF;
+            codigoUF: UF;
         @Column({name: 'NOME', type:'varchar'})
-            NOME: string;
+            nome: string;
         @Column({name: 'STATUS', type:'int'})
-            STATUS: number;
-        @OneToMany(() => Bairro, (bairro) => bairro.CODIGO_MUNICIPIO)
-            BAIRROS: Bairro[];
+            status: number;
+        @OneToMany(() => Bairro, (bairro) => bairro.codigoMunicipio)
+            bairros: Bairro[];
 
     }

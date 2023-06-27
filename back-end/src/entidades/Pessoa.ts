@@ -4,22 +4,20 @@ import { Endereco } from "./Endereco";
 @Entity('TB_PESSOA')
     export class Pessoa{
         @PrimaryGeneratedColumn({name: 'CODIGO_PESSOA', type: 'int'})
-            CODIGO_PESSOA: number;
+            codigoPessoa: number;
         @Column({name:'NOME', type: 'varchar'})
-            NOME: string;
+            nome: string;
         @Column({name: 'SOBRENOME', type: 'varchar'})
-            SOBRENOME: string;
+            sobrenome: string;
         @Column({name: 'IDADE', type: 'int'})
-            IDADE: number;
-        @Column({name: 'DATA_NASC', type: 'date'})
-            DATA_NASC: Date;
+            idade: number;
         @Column({name: 'LOGIN', type:'varchar'})
-            LOGIN: string;
+            login: string;
         @Column({name:'SENHA', type: 'varchar'})
-            SENHA: string;
+            senha: string;
         @Column({name: 'STATUS', type: 'int'})
-            STATUS: number;
-        @OneToMany(() => Endereco, (endereco) => endereco.PESSOA)
-            ENDERECOS: Endereco[];
+            status: number;
+        @OneToMany(() => Endereco, (endereco) => endereco.pessoa)
+            enderecos: Endereco[];
 
 }

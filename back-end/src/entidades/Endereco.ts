@@ -6,27 +6,27 @@ import { Pessoa } from "./Pessoa";
 @Entity('TB_ENDERECO')
     export class Endereco{
         @PrimaryGeneratedColumn({name:'CODIGO_ENDERECO', type:'int'})
-            CODIGO_ENDERECO: number;
+            codigoEndereco: number;
         
-        @ManyToOne(()=> Pessoa, (pessoa) => pessoa.ENDERECOS)
+        @ManyToOne(()=> Pessoa, (pessoa) => pessoa.enderecos)
         @JoinColumn({name: 'CODIGO_PESSOA'})
-            PESSOA: Pessoa;
+            pessoa: Pessoa;
         
-        @OneToOne(() => Bairro, (bairro) => bairro.ENDERECOS)
+        @OneToOne(() => Bairro, (bairro) => bairro.enderecos)
         @JoinColumn({name: 'CODIGO_BAIRRO'})
-            BAIRRO: Bairro;
+            bairro: Bairro;
         
         @Column({name: 'NOME_RUA', type: 'varchar'})
-            NOME_RUA: string;
+            nomeRua: string;
         
         @Column({name: 'NUMERO', type: 'number'})
-            NUMERO: Number;
+            numero: Number;
         
         @Column({name:'COMPLEMENTO', type: 'varchar', nullable: true})
-            COMPLEMENTO: string;
+            complemento: string;
         
         @Column({name: 'CEP', type:'varchar'})
-            CEP: string;
+            cep: string;
         @Column({name: 'Status', type:'number'})
-            STATUS: number;
+            status: number;
     }

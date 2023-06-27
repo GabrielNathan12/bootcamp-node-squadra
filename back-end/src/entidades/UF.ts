@@ -5,17 +5,17 @@ import {Municipio} from './Municipio';
 @Entity('TB_UF')
     export class UF{
         @PrimaryGeneratedColumn({name: 'CODIGO_UF', type: 'int'})
-            CODIGO_UF: number;
+            codigoUF: number;
         
         @Column({name: 'SIGLA', type:'varchar2'})
-            SIGLA: string;
+            sigla: string;
         
         @Column({name:'NOME', type:'varchar'})
-            NOME:string;
+            nome:string;
         
         @Column({name:'STATUS', type:'int'})
-            STATUS: number;
+            status: number;
         
-        @OneToMany(() => Municipio, (municipio) => municipio.CODIGO_UF)
-            MUNICIPIOS: Municipio[];
+        @OneToMany(() => Municipio, (municipio) => municipio.codigoUF)
+            municipios: Municipio[];
     }

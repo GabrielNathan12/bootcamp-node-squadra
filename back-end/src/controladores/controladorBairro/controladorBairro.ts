@@ -13,7 +13,7 @@ export class ControladorBairro extends ControladorGeral{
         const deletarPeloId = parseInt(requisicao.params.idbairro);
 
         try{
-            const codigo_bairro = await this.repositorio.bairroRepositorio.findOne({where: {CODIGO_BAIRRO : deletarPeloId}});
+            const codigo_bairro = await this.repositorio.bairroRepositorio.findOne({where: {codigoBairro : deletarPeloId}});
 
             if(!codigo_bairro){
                 return resposta.status(400).json({mensagem: 'Codigo do bairro não encontrado !'});
@@ -45,8 +45,8 @@ export class ControladorBairro extends ControladorGeral{
         const pegarIdBairro = parseInt(requisicao.params.idbairro);
 
         try{
-            const codigo_bairro = await this.repositorio.bairroRepositorio.findOne({where: {CODIGO_BAIRRO : pegarIdBairro}});
-            const nome_bairro = await this.repositorio.bairroRepositorio.findOne({where : {NOME: nome}});
+            const codigo_bairro = await this.repositorio.bairroRepositorio.findOne({where: {codigoBairro : pegarIdBairro}});
+            const nome_bairro = await this.repositorio.bairroRepositorio.findOne({where : {nome: nome}});
 
             if(!codigo_bairro){
                 return resposta.status(400).json({mensagem : 'Codigo do bairro não encontrado'});
@@ -55,8 +55,8 @@ export class ControladorBairro extends ControladorGeral{
                 return resposta.status(400).json({mensagem: 'Bairro ja inserido'});
             }
 
-            codigo_bairro.NOME =  nome   || codigo_bairro.NOME;
-            codigo_bairro.STATUS=  status  || codigo_bairro.STATUS;
+            codigo_bairro.nome =  nome   || codigo_bairro.nome;
+            codigo_bairro.status=  status  || codigo_bairro.status;
 
             const bairroAtualizado = await this.repositorio.bairroRepositorio.save(codigo_bairro);
 
@@ -71,12 +71,12 @@ export class ControladorBairro extends ControladorGeral{
         const {codigo_municipio,nome, status} = requisicao.body;
 
         try{
-            const codigo_municipio_ = await this.repositorio.municipioRepositorio.findOne({where: {CODIGO_MUNICIPIO: codigo_municipio}})
+            const codigo_municipio_ = await this.repositorio.municipioRepositorio.findOne({where: {codigoMunicipio: codigo_municipio}})
             if(!nome || !status){
                 return resposta.status(400).json({mensagem: "Nome não encontrados !"});
             }
             else {
-                const verificarUmNome = await this.repositorio.bairroRepositorio.findOne({where : {NOME: nome} });
+                const verificarUmNome = await this.repositorio.bairroRepositorio.findOne({where : {nome: nome} });
 
                 if(verificarUmNome){
                     return resposta.status(400).json({mensagem: 'Nome já inserido no banco'});
@@ -88,9 +88,9 @@ export class ControladorBairro extends ControladorGeral{
 
                 const novoBairro = this.repositorio.bairroRepositorio.create(
                     {
-                        CODIGO_MUNICIPIO: codigo_municipio,
-                        NOME: nome,
-                        STATUS: status
+                        codigoMunicipio: codigo_municipio,
+                        nome: nome,
+                        status: status
                     }
                 );
                 await this.repositorio.bairroRepositorio.save(novoBairro);

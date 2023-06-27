@@ -14,7 +14,7 @@ export class ControladorMunicipio extends ControladorGeral{
         const deletarPeloId = parseInt(requisicao.params.idmunicipio);
 
         try{
-            const codigo_Municipio = await this.repositorio.municipioRepositorio.findOne({where: {CODIGO_MUNICIPIO : deletarPeloId}});
+            const codigo_Municipio = await this.repositorio.municipioRepositorio.findOne({where: {codigoMunicipio : deletarPeloId}});
 
             if(!codigo_Municipio){
                 return resposta.status(400).json({mensagem: 'Codigo do municipio não encontrado !'});
@@ -34,7 +34,7 @@ export class ControladorMunicipio extends ControladorGeral{
         try{
             const municipios = await this.repositorio.municipioRepositorio.find({
                 relations: {
-                    BAIRROS: true
+                    bairros: true
                 }
             });
             return resposta.status(200).json(municipios);
@@ -49,8 +49,8 @@ export class ControladorMunicipio extends ControladorGeral{
         const pegarIdMunicipio = parseInt(requisicao.params.idmunicipio);
 
         try{
-            const codigo_Municipio = await this.repositorio.municipioRepositorio.findOne({where: {CODIGO_MUNICIPIO : pegarIdMunicipio}});
-            const nome_municipio = await this.repositorio.municipioRepositorio.findOne({where : {NOME: nome}});
+            const codigo_Municipio = await this.repositorio.municipioRepositorio.findOne({where: {codigoMunicipio : pegarIdMunicipio}});
+            const nome_municipio = await this.repositorio.municipioRepositorio.findOne({where : {nome: nome}});
 
             if(!codigo_Municipio){
                 return resposta.status(400).json({mensagem : 'Codigo do municipio não encontrado'});
@@ -63,8 +63,8 @@ export class ControladorMunicipio extends ControladorGeral{
             }
 
 
-            codigo_Municipio.NOME =  nome   || codigo_Municipio.NOME;
-            codigo_Municipio.STATUS=  status  || codigo_Municipio.STATUS;
+            codigo_Municipio.nome =  nome   || codigo_Municipio.nome;
+            codigo_Municipio.status=  status  || codigo_Municipio.status;
 
             const municipioAtualizado = await this.repositorio.municipioRepositorio.save(codigo_Municipio);
 
@@ -80,13 +80,13 @@ export class ControladorMunicipio extends ControladorGeral{
 
         try{
 
-            const verificarCodigoUF = await this.repositorio.ufRepositorio.findOne({where: {CODIGO_UF:codigo_uf}});
+            const verificarCodigoUF = await this.repositorio.ufRepositorio.findOne({where: {codigoUF:codigo_uf}});
 
             if(!nome || !status || !codigo_uf){
                 return resposta.status(400).json({mensagem: "Nome ou Status e Codigo_UF não encontrados no Json !"});
             }
             else {
-                const verificarUmNome = await this.repositorio.municipioRepositorio.findOne({where : {NOME: nome} });
+                const verificarUmNome = await this.repositorio.municipioRepositorio.findOne({where : {nome: nome} });
 
                 if(!verificarCodigoUF){
                     return resposta.status(400).json({mensagem: 'Codigo Uf nao encontrado'});
@@ -97,9 +97,9 @@ export class ControladorMunicipio extends ControladorGeral{
 
                 const novoMunicipio = this.repositorio.municipioRepositorio.create(
                     {
-                        CODIGO_UF: codigo_uf,
-                        NOME: nome,
-                        STATUS: status
+                        codigoUF: codigo_uf,
+                        nome: nome,
+                        status: status
                     }
                 );
                 await this.repositorio.municipioRepositorio.save(novoMunicipio);

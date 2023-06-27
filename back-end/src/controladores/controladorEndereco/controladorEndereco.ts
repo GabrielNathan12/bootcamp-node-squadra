@@ -14,7 +14,7 @@ export class ControladorEndereco extends ControladorGeral{
         const deletarPeloId = parseInt(requisicao.params.idendereco);
 
         try{
-            const codigo_endero = await this.repositorio.enderecoRepositorio.findOne({where: {CODIGO_ENDERECO : deletarPeloId}});
+            const codigo_endero = await this.repositorio.enderecoRepositorio.findOne({where: {codigoEndereco : deletarPeloId}});
 
             if(!codigo_endero){
                 return resposta.status(400).json({mensagem: 'Codigo da pessoa não encontrado !'});
@@ -46,7 +46,7 @@ export class ControladorEndereco extends ControladorGeral{
         const pegarIdEndereco = parseInt(requisicao.params.idendereco);
         
         try{
-            const codigo_endereco = await this.repositorio.enderecoRepositorio.findOne({where: {CODIGO_ENDERECO : pegarIdEndereco}});
+            const codigo_endereco = await this.repositorio.enderecoRepositorio.findOne({where: {codigoEndereco : pegarIdEndereco}});
 
             if(!codigo_endereco){
                 return resposta.status(400).json({mensagem : 'Codigo do enderco não encontrado'});
@@ -56,13 +56,13 @@ export class ControladorEndereco extends ControladorGeral{
             }
 
 
-            codigo_endereco.PESSOA =  codigo_pessoa   || codigo_endereco.PESSOA;
-            codigo_endereco.BAIRRO = bairro || codigo_endereco.BAIRRO;
-            codigo_endereco.NOME_RUA = nome || codigo_endereco.NOME_RUA;
-            codigo_endereco.NUMERO =  numero  || codigo_endereco.NUMERO;
-            codigo_endereco.COMPLEMENTO = complemento || codigo_endereco.COMPLEMENTO;
-            codigo_endereco.CEP = CEP || codigo_endereco.CEP;
-            codigo_endereco.STATUS = status || codigo_endereco.STATUS;
+            codigo_endereco.pessoa =  codigo_pessoa   || codigo_endereco.pessoa;
+            codigo_endereco.bairro = bairro || codigo_endereco.bairro;
+            codigo_endereco.nomeRua = nome || codigo_endereco.nomeRua;
+            codigo_endereco.nomeRua =  numero  || codigo_endereco.numero;
+            codigo_endereco.complemento = complemento || codigo_endereco.complemento;
+            codigo_endereco.cep = CEP || codigo_endereco.cep;
+            codigo_endereco.status = status || codigo_endereco.status;
 
             const enderecoAtualizada = await this.repositorio.enderecoRepositorio.save(codigo_endereco);
 
@@ -78,8 +78,8 @@ export class ControladorEndereco extends ControladorGeral{
 
         try{
 
-            const verificaCodPessoa = await this.repositorio.pessoaRepositorio.findOne({where: {CODIGO_PESSOA: codigo_pessoa}});
-            const vericaCodBairro = await this.repositorio.bairroRepositorio.findOne({where: {NOME: nome_bairro}});
+            const verificaCodPessoa = await this.repositorio.pessoaRepositorio.findOne({where: {codigoPessoa: codigo_pessoa}});
+            const vericaCodBairro = await this.repositorio.bairroRepositorio.findOne({where: {nome: nome_bairro}});
 
             if(!nome_rua || !status || !CEP || !complemento || !codigo_pessoa || !nome_bairro || !numero){
                 return resposta.status(400).json({mensagem: "Dados nao encontrados !"});
@@ -91,12 +91,12 @@ export class ControladorEndereco extends ControladorGeral{
                 }
                 const novoEndereco = this.repositorio.enderecoRepositorio.create(
                     {  
-                        PESSOA: codigo_pessoa,
-                        BAIRRO: nome_bairro,
-                        NOME_RUA: nome_rua,
-                        NUMERO: numero,
-                        COMPLEMENTO: complemento,
-                        STATUS: status
+                        pessoa: codigo_pessoa,
+                        bairro: nome_bairro,
+                        nomeRua: nome_rua,
+                        numero: numero,
+                        complemento: complemento,
+                        status: status
                     }
                 );
                 await this.repositorio.enderecoRepositorio.save(novoEndereco);

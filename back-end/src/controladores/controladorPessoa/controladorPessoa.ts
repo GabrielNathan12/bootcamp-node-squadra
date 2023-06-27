@@ -14,7 +14,7 @@ export class ControladorPessoa extends ControladorGeral{
         const deletarPeloId = parseInt(requisicao.params.idpessoa);
 
         try{
-            const codigo_pessoa = await this.repositorio.pessoaRepositorio.findOne({where: {CODIGO_PESSOA : deletarPeloId}});
+            const codigo_pessoa = await this.repositorio.pessoaRepositorio.findOne({where: {codigoPessoa : deletarPeloId}});
 
             if(!codigo_pessoa){
                 return resposta.status(400).json({mensagem: 'Codigo da pessoa não encontrado !'});
@@ -32,7 +32,7 @@ export class ControladorPessoa extends ControladorGeral{
 
     public async listarDado(requisicao: Request, resposta: Response) {
         try{
-            const pessoas = await this.repositorio.pessoaRepositorio.find({relations: {ENDERECOS: true}});
+            const pessoas = await this.repositorio.pessoaRepositorio.find({relations: {enderecos: true}});
 
             return resposta.status(200).json(pessoas);
         }
@@ -46,7 +46,7 @@ export class ControladorPessoa extends ControladorGeral{
         const pegarIdPessoa = parseInt(requisicao.params.idpessoa);
 
         try{
-            const codigo_pessoa = await this.repositorio.pessoaRepositorio.findOne({where: {CODIGO_PESSOA : pegarIdPessoa}});
+            const codigo_pessoa = await this.repositorio.pessoaRepositorio.findOne({where: {codigoPessoa : pegarIdPessoa}});
 
             if(!codigo_pessoa){
                 return resposta.status(400).json({mensagem : 'Codigo do bairro não encontrado'});
@@ -56,13 +56,12 @@ export class ControladorPessoa extends ControladorGeral{
             }
 
 
-            codigo_pessoa.NOME =  nome   || codigo_pessoa.NOME;
-            codigo_pessoa.SOBRENOME = sobrenome || codigo_pessoa.SOBRENOME;
-            codigo_pessoa.IDADE = idade || codigo_pessoa.IDADE;
-            codigo_pessoa.DATA_NASC = data_nasc || codigo_pessoa.DATA_NASC;
-            codigo_pessoa.SENHA = senha || codigo_pessoa.SENHA;
-            codigo_pessoa.LOGIN = login || codigo_pessoa.LOGIN;
-            codigo_pessoa.STATUS=  status  || codigo_pessoa.STATUS;
+            codigo_pessoa.nome =  nome   || codigo_pessoa.nome;
+            codigo_pessoa.sobrenome = sobrenome || codigo_pessoa.sobrenome;
+            codigo_pessoa.idade = idade || codigo_pessoa.idade;
+            codigo_pessoa.senha = senha || codigo_pessoa.senha;
+            codigo_pessoa.login = login || codigo_pessoa.login;
+            codigo_pessoa.status=  status  || codigo_pessoa.status;
 
             const pessoaAtualizada = await this.repositorio.pessoaRepositorio.save(codigo_pessoa);
 
@@ -85,13 +84,12 @@ export class ControladorPessoa extends ControladorGeral{
 
                 const novaPessoa = this.repositorio.pessoaRepositorio.create(
                     {
-                        NOME: nome,
-                        SOBRENOME: sobrenome,
-                        DATA_NASC: data_nasc,
-                        IDADE: idade,
-                        LOGIN: login,
-                        SENHA: senha,
-                        STATUS: status
+                        nome: nome,
+                        sobrenome: sobrenome,
+                        idade: idade,
+                        login: login,
+                        senha: senha,
+                        status: status
                     }
                 );
                 await this.repositorio.pessoaRepositorio.save(novaPessoa);
