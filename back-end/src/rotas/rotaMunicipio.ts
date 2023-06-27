@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { ControladorMunicipio } from "../controladores/controladorMunicipio/controladorMunicipio";
 import { IRepositorios } from "../Irepositorios/Irepositorios";
 import { ufRepositorio } from "../repositorios/ufRepositorio";
@@ -18,9 +18,9 @@ const repositorios: IRepositorios = {
 const rotaMunicipio = Router();
 const ControladorGeral = new ControladorMunicipio(repositorios);
 
-rotaMunicipio.get('/municipio', ControladorGeral.listarDado);
-rotaMunicipio.post('/municipio', ControladorGeral.adionarDado);
-rotaMunicipio.put('/municipio/:idmunicipio', ControladorGeral.atualizarDado);
-rotaMunicipio.delete('/municipio/:idmunicipio', ControladorGeral.removerDado);
+rotaMunicipio.get('/municipio',(requisicao: Request, resposta: Response)=> ControladorGeral.listarDado(requisicao, resposta));
+rotaMunicipio.post('/municipio',(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
+rotaMunicipio.put('/municipio/:idmunicipio',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
+rotaMunicipio.delete('/municipio/:idmunicipio',(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
 
 export default rotaMunicipio;

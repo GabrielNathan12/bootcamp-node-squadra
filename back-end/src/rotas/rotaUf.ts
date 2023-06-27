@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import { ControladorUf } from "../controladores/controladorUf/controladorUf";
 import { ufRepositorio } from "../repositorios/ufRepositorio";
 import { bairroRepositorio } from "../repositorios/bairroRepositorio";
@@ -20,9 +20,9 @@ const repositorios: IRepositorios = {
 
 const ControladorGeral = new ControladorUf(repositorios);
 
-rotaUf.get('/uf', ControladorGeral.listarDado);
-rotaUf.post('/uf', ControladorGeral.adionarDado);
-rotaUf.put('/uf/:iduf', ControladorGeral.atualizarDado);
-rotaUf.delete('/uf/:iduf', ControladorGeral.removerDado);
+rotaUf.get('/uf',(requisicao: Request, resposta: Response)=> ControladorGeral.listarDado(requisicao, resposta));
+rotaUf.post('/uf',(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
+rotaUf.put('/uf/:iduf',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
+rotaUf.delete('/uf/:iduf',(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
 
 export default rotaUf;

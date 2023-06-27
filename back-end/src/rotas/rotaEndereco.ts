@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { ControladorEndereco } from "../controladores/controladorEndereco/controladorEndereco";
 import { IRepositorios } from "../Irepositorios/Irepositorios";
 import { ufRepositorio } from "../repositorios/ufRepositorio";
@@ -18,10 +18,10 @@ const repositorios: IRepositorios = {
 const rotaEndereco = Router();
 const ControladorGeral = new ControladorEndereco(repositorios);
 
-rotaEndereco.get('/endereco', ControladorGeral.listarDado);
-rotaEndereco.post('/endereco', ControladorGeral.adionarDado);
-rotaEndereco.put('/endereco/:idendereco', ControladorGeral.atualizarDado);
-rotaEndereco.delete('/endereco/:idendereco', ControladorGeral.removerDado);
+rotaEndereco.get('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.listarDado(requisicao, resposta));
+rotaEndereco.post('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
+rotaEndereco.put('/endereco/:idendereco',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
+rotaEndereco.delete('/endereco/:idendereco',(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
 
 
 export default rotaEndereco;
