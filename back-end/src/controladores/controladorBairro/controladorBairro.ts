@@ -1,7 +1,11 @@
-import { Request, Response } from "express-serve-static-core";
+import { ParamsDictionary, Request, Response } from "express-serve-static-core";
 import { ControladorGeral } from "../ControladorGeral";
 import { IRepositorios } from "../../Irepositorios/Irepositorios";
+import { ParsedQs } from "qs";
 export class ControladorBairro extends ControladorGeral{
+    public listarDadosPeloNome(requisicao: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, resposta: Response<any, Record<string, any>, number>): Promise<Response<any, Record<string, any>, number>> {
+        throw new Error("Method not implemented.");
+    }
     private repositorio: IRepositorios;
     
     constructor(repositorios: IRepositorios){
@@ -16,11 +20,11 @@ export class ControladorBairro extends ControladorGeral{
             const codigo_bairro = await this.repositorio.bairroRepositorio.findOne({where: {codigoBairro : deletarPeloId}});
 
             if(!codigo_bairro){
-                return resposta.status(400).json({mensagem: 'Codigo do bairro não encontrado !'});
+                return resposta.status(400).json({mensagem: 'Codigo do bairro não encontrado !', status: '400'});
             }
             await this.repositorio.bairroRepositorio.remove(codigo_bairro);
 
-            return resposta.status(200).json({mensagem: 'Deleção completada'});
+            return resposta.status(200).json({mensagem: 'Deleção completada', status: await this.repositorio.bairroRepositorio.find()});
 
         }
         catch(erro){
@@ -41,26 +45,29 @@ export class ControladorBairro extends ControladorGeral{
     }
     
     public async atualizarDado(requisicao: Request, resposta: Response ) {
-        const { nome, status } = requisicao.body;
-        const pegarIdBairro = parseInt(requisicao.params.idbairro);
+        const {codigoBairro ,nome, status } = requisicao.body;
 
         try{
+            const pegarIdBairro = Number(codigoBairro);
             const codigo_bairro = await this.repositorio.bairroRepositorio.findOne({where: {codigoBairro : pegarIdBairro}});
             const nome_bairro = await this.repositorio.bairroRepositorio.findOne({where : {nome: nome}});
 
             if(!codigo_bairro){
-                return resposta.status(400).json({mensagem : 'Codigo do bairro não encontrado'});
+                return resposta.status(400).json({mensagem : 'Codigo do bairro não encontrado', status: '400'});
             }
             if(nome_bairro){
-                return resposta.status(400).json({mensagem: 'Bairro ja inserido'});
+                return resposta.status(400).json({mensagem: 'Bairro ja inserido', status: '400'});
+            }
+            if(!this.vericarStatus(Number(status))){
+                return resposta.status(400).json({mensagem: 'Status inválido', status:'400'})
             }
 
             codigo_bairro.nome =  nome   || codigo_bairro.nome;
             codigo_bairro.status=  status  || codigo_bairro.status;
 
-            const bairroAtualizado = await this.repositorio.bairroRepositorio.save(codigo_bairro);
+            await this.repositorio.bairroRepositorio.save(codigo_bairro);
 
-            return resposta.status(200).json({mensagem: bairroAtualizado});
+            return resposta.status(200).json(this.repositorio.bairroRepositorio.find({}));
             
         }catch(erro){
             return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro })
@@ -68,10 +75,10 @@ export class ControladorBairro extends ControladorGeral{
     }
 
     public async adionarDado(requisicao: Request, resposta: Response) {
-        const {codigo_municipio,nome, status} = requisicao.body;
+        const {codigoMunicipio,nome, status} = requisicao.body;
 
         try{
-            const codigo_municipio_ = await this.repositorio.municipioRepositorio.findOne({where: {codigoMunicipio: codigo_municipio}})
+            const codigo_municipio_ = await this.repositorio.municipioRepositorio.findOne({where: {codigoMunicipio: codigoMunicipio}})
             if(!nome || !status){
                 return resposta.status(400).json({mensagem: "Nome não encontrados !"});
             }
@@ -79,22 +86,25 @@ export class ControladorBairro extends ControladorGeral{
                 const verificarUmNome = await this.repositorio.bairroRepositorio.findOne({where : {nome: nome} });
 
                 if(verificarUmNome){
-                    return resposta.status(400).json({mensagem: 'Nome já inserido no banco'});
+                    return resposta.status(400).json({mensagem: 'Nome já inserido no banco', status: '400'});
                 }
 
                 if(!codigo_municipio_){
-                    return resposta.status(400).json({mensagem: 'Codigo do municipio nao encontrado'});
+                    return resposta.status(400).json({mensagem: 'Codigo do municipio nao encontrado', status: '400'});
+                }
+                if(!this.vericarStatus(Number(status))){
+                    return resposta.status(400).json({mensagem: 'Status inválido', status:'400'})
                 }
 
                 const novoBairro = this.repositorio.bairroRepositorio.create(
                     {
-                        codigoMunicipio: codigo_municipio,
+                        codigoMunicipio: codigoMunicipio,
                         nome: nome,
                         status: status
                     }
                 );
                 await this.repositorio.bairroRepositorio.save(novoBairro);
-                return resposta.status(200).json(novoBairro);
+                return resposta.status(200).json(this.repositorio.bairroRepositorio.find({}));
             }
         }
         catch(erro){

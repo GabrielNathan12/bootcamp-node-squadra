@@ -18,4 +18,3 @@ AppDataSource.initialize().then(()=>{
     console.log("Conexão realizada com a Oracle")
     return servidor.listen(process.env.DBPORTASER);
 });
-

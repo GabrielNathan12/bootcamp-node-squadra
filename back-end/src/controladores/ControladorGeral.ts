@@ -16,4 +16,5 @@ export abstract class ControladorGeral  {
         }
         return false;
     }
+    public abstract listarDadosPeloNome(requisicao:Request, resposta: Response): Promise<Response>;
 }

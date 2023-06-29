@@ -20,7 +20,7 @@ const ControladorGeral = new ControladorEndereco(repositorios);
 
 rotaEndereco.get('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.listarDado(requisicao, resposta));
 rotaEndereco.post('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
-rotaEndereco.put('/endereco/:idendereco',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
+rotaEndereco.put('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
 rotaEndereco.delete('/endereco/:idendereco',(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
 
 
