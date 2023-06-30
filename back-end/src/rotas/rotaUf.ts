@@ -20,9 +20,10 @@ const repositorios: IRepositorios = {
 
 const ControladorGeral = new ControladorUf(repositorios);
 
-rotaUf.get('/uf',(requisicao: Request, resposta: Response)=> ControladorGeral.listarDado(requisicao, resposta) || ControladorGeral.listarDadosPeloNome(requisicao, resposta));
-rotaUf.post('/uf/:nome',(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
-rotaUf.put('/uf',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
-rotaUf.delete('/uf/:iduf',(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
+rotaUf.get('/uf',async (requisicao: Request, resposta: Response)=> ControladorGeral.listarDado(requisicao, resposta));
+rotaUf.get('/uf/:nome', async(requisicao: Request, resposta: Response) => ControladorGeral.listarDadosPeloNome(requisicao, resposta));
+rotaUf.post('/uf',async(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
+rotaUf.put('/uf',async(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
+rotaUf.delete('/uf/:iduf',async(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
 
 export default rotaUf;

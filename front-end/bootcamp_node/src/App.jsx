@@ -1,28 +1,23 @@
-import { useEffect, useState } from 'react'
 
-import conectarBackend from './servidor/conexaoServidos'
-import './App.css'
+import Login from './telas/autenticacao/Login';
+import Cadastro from './telas/cadastro/Cadastro';
+import Municipio from './telas/municipio/Municipio';
+import UF from './telas/UF/UF';
 
 function App() {
-  const [uf, setUf] = useState([]);
+  
 
-  const colocarFrontEnd = () =>{
-    conectarBackend.get('/uf').then((resultado) => {
-      setUf(resultado.data)
-    })
-  }
-  useEffect(() => {
-    colocarFrontEnd
-  })
   return (
-    <>
+    <div>
 
-      <div>
-        colocarFrontEnd
-      </div>
-      
-    </>
-  )
+      <h1>Api: Cadastro de UF(Unidade Federativa)</h1>
+      <nav><Login/></nav>
+      <nav><Cadastro/></nav>
+
+      <UF/>
+      <Municipio/>
+     </div>
+  );
 }
 
-export default App
+export default App;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const conectarBackend = axios.create({
+ const conectarBackend = axios.create({
     baseURL: 'http://localhost:3333'
 });
 

@@ -19,17 +19,13 @@ export class ControladorUf extends ControladorGeral{
             const pegarIdUf = Number(codigoUF);
             // Transformo o codigoUF em int, que ele vem como string
             const codigo_UF = await this.repositorio.ufRepositorio.findOne({where: {codigoUF : pegarIdUf}});
-            const sigla_UF = await this.repositorio.ufRepositorio.findOne({where: {sigla: sigla}});
-            const nome_UF = await this.repositorio.ufRepositorio.findOne({where : {nome: nome}});
+            
 
             // Verifico se existe o codigoUF passado, se nao existir retorna um status 400 dizendo que nao conseguiu encontrar
             if(!codigo_UF){
                 return resposta.status(400).json({mensagem : 'Codigo Uf não encontrado', status:'400'});
             }
-            // Verifico se existe a sigla e o nome, se existir retorna um status 400 para nao colocar dados duplicados
-            if(!sigla_UF || !nome_UF){
-                return resposta.status(400).json({mensagem: 'Nome ou Sigla já inseridos',status:'400'});
-            }
+           
             // Verifica se a sigla e valido
             if(!this.vericarQtdSiglas(sigla)){
                 return resposta.status(400).json({mensagem: 'Sigla inválida', status:'400'});
@@ -42,7 +38,14 @@ export class ControladorUf extends ControladorGeral{
             codigo_UF.sigla =  sigla   || codigo_UF.sigla;
             codigo_UF.nome  =  nome    || codigo_UF.nome;
             codigo_UF.status=  status  || codigo_UF.status;
-
+            
+            const sigla_UF = await this.repositorio.ufRepositorio.findOne({where: {sigla: sigla}});
+            const nome_UF = await this.repositorio.ufRepositorio.findOne({where : {nome: nome}});
+             // Verifico se existe a sigla e o nome, se existir retorna um status 400 para nao colocar dados duplicados
+             if(sigla_UF || nome_UF){
+                return resposta.status(400).json({mensagem: 'Nome ou Sigla já inseridos',status:'400'});
+            }
+            
             // e salva de novo essa atualizacao no banco de dados
             await this.repositorio.ufRepositorio.save(codigo_UF);
             // Retorna novamente a lista completa, atualizada
@@ -55,19 +58,19 @@ export class ControladorUf extends ControladorGeral{
     }
     // Funcao que remove o UF pelo id passado pela url
     public async removerDado(requisicao: Request, resposta: Response ) {
-            try{
-                const deletarPeloId = parseInt(requisicao.params.iduf);
-                // Pego esse ID e converto para inteiro
-                const codigo_Uf = await this.repositorio.ufRepositorio.findOne({where: {codigoUF : deletarPeloId}});
+        try{
+            const deletarPeloId = parseInt(requisicao.params.iduf);
+            // Pego esse ID e converto para inteiro
+            const codigo_Uf = await this.repositorio.ufRepositorio.findOne({where: {codigoUF : deletarPeloId}});
 
-                // Se caso o codigo nao exista retorna, retorna o status 400, avisando que o codigo nao existe
-                if(!codigo_Uf){
-                    return resposta.status(400).json({mensagem: 'Codigo Uf não encontrado !' , status: '400'});
-                }
-                // Se encontrar remove pelo ID
-                await this.repositorio.ufRepositorio.remove(codigo_Uf);
-                // Retorna uma mensagem dizendo que a o delecao foi completada com sucesso e os dados do Banco de dados
-                return resposta.status(200).json({mensagem: 'Deleção completada', status: await this.repositorio.ufRepositorio.find({})});
+            // Se caso o codigo nao exista retorna, retorna o status 400, avisando que o codigo nao existe
+            if(!codigo_Uf){
+                return resposta.status(400).json({mensagem: 'Codigo Uf não encontrado !' , status: '400'});
+            }
+            // Se encontrar remove pelo ID
+            await this.repositorio.ufRepositorio.remove(codigo_Uf);
+            // Retorna uma mensagem dizendo que a o delecao foi completada com sucesso e os dados do Banco de dados
+            return resposta.status(200).json({mensagem: 'Deleção completada', status: await this.repositorio.ufRepositorio.find({})});
 
         }
         catch(erro){
@@ -78,9 +81,9 @@ export class ControladorUf extends ControladorGeral{
 
     // Funcao que faz a insercao de dados na tabela UF
     public async adionarDado(requisicao: Request, resposta: Response) {
-        const {sigla, nome, status} = requisicao.body;
-        // Pega do body a sigla o nome e o status
         try{
+            const {sigla, nome, status} = requisicao.body;
+            // Pega do body a sigla o nome e o status
             // Verifica se eles sao validos
             if(!sigla || !nome || !status){
                 return resposta.status(400).json({mensagem: "Sigla ou Nome ou Status não encontrados no Json !"});
@@ -141,16 +144,19 @@ export class ControladorUf extends ControladorGeral{
         }
     }
     public async listarDadosPeloNome(requisicao: Request, resposta: Response) {
+        
         try {
-          const nome = requisicao.query.nome;
+         
+            const nome = requisicao.query;
+        
+            console.log(nome);
+            if (!nome) {
+                return resposta.status(400).json({ mensagem: 'Nome não encontrado' });
+            }
       
-          console.log(nome);
-      
-          if (!nome) {
-            return resposta.status(400).json({ mensagem: 'Nome não encontrado' });
-          }
-      
-          const ufEncontrada = await this.repositorio.ufRepositorio.findOne({ where: { nome: nome as string } });
+            const ufEncontrada = await this.repositorio.ufRepositorio.findOne({
+                where: { nome: String(nome) }
+          });
       
           if (!ufEncontrada) {
             return resposta.status(404).json({ mensagem: 'UF não encontrada' });
@@ -166,10 +172,10 @@ export class ControladorUf extends ControladorGeral{
       
     public async listarDadoPeloStatus(requisicao: Request, resposta: Response){
         try{
-            const statu = parseInt(requisicao.params.status);
+            const status = parseInt(requisicao.params.status);
 
-            console.log(statu);
-            const uf = await this.repositorio.ufRepositorio.find({where: {status: statu}});
+            console.log(status);
+            const uf = await this.repositorio.ufRepositorio.find({where: {status: status}});
             return resposta.status(200).json(uf);
 
         }catch(erro){

@@ -1,8 +1,12 @@
-import { Request, Response } from "express-serve-static-core";
+import { ParamsDictionary, Request, Response } from "express-serve-static-core";
 import { ControladorGeral } from "../ControladorGeral";
 import { IRepositorios } from "../../Irepositorios/Irepositorios";
+import { ParsedQs } from "qs";
 
 export class ControladorPessoa extends ControladorGeral{
+    public listarDadosPeloNome(requisicao: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, resposta: Response<any, Record<string, any>, number>): Promise<Response<any, Record<string, any>, number>> {
+        throw new Error("Method not implemented.");
+    }
     private repositorio: IRepositorios;
 
     constructor(repositorios: IRepositorios) {

@@ -1,11 +1,34 @@
-import { ParamsDictionary, Request, Response } from "express-serve-static-core";
+import {Request, Response } from "express-serve-static-core";
 import { ControladorGeral } from "../ControladorGeral";
 import { IRepositorios } from "../../Irepositorios/Irepositorios";
-import { ParsedQs } from "qs";
+
 export class ControladorBairro extends ControladorGeral{
-    public listarDadosPeloNome(requisicao: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, resposta: Response<any, Record<string, any>, number>): Promise<Response<any, Record<string, any>, number>> {
-        throw new Error("Method not implemented.");
-    }
+    public async listarDadosPeloNome(requisicao: Request, resposta: Response) {
+        
+        try {
+         
+            const nome = requisicao.query.nome;
+        
+            console.log(nome);
+            if (!nome) {
+                return resposta.status(400).json({ mensagem: 'Nome não encontrado' });
+            }
+      
+            const ufEncontrada = await this.repositorio.ufRepositorio.findOne({
+                where: { nome: String(nome) }
+          });
+      
+          if (!ufEncontrada) {
+            return resposta.status(404).json({ mensagem: 'UF não encontrada' });
+          }
+      
+          return resposta.status(200).json(ufEncontrada);
+      
+        } catch (erro) {
+          return resposta.status(500).json({ mensagem: 'Erro interno no servidor: ' + erro });
+        }
+      }
+      
     private repositorio: IRepositorios;
     
     constructor(repositorios: IRepositorios){

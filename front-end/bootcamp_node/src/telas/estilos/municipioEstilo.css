@@ -1,0 +1,13 @@
+.container-municipio{
+    width: 200px;
+    
+    margin: 0;
+}
+
+
+.lista-municipio{
+    padding: 30px;
+    border: 1px solid #111;
+    display: flex;
+    flex-direction: column;
+}

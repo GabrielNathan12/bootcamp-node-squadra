@@ -37,10 +37,7 @@ export class ControladorMunicipio extends ControladorGeral{
     public async listarDado(requisicao: Request, resposta: Response) {
         try{
             const municipios = await this.repositorio.municipioRepositorio.find({
-                relations: {
-                    codigoUF: true,
-                    bairros: true
-                },
+                select: ['codigoMunicipio', 'codigoUF', 'nome','status']
             });
             return resposta.status(200).json(municipios);
         }
