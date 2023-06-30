@@ -59,7 +59,7 @@ export class ControladorUf extends ControladorGeral{
     // Funcao que remove o UF pelo id passado pela url
     public async removerDado(requisicao: Request, resposta: Response ) {
         try{
-            const deletarPeloId = parseInt(requisicao.params.iduf);
+            const deletarPeloId = parseInt(requisicao.params.codigoUF);
             // Pego esse ID e converto para inteiro
             const codigo_Uf = await this.repositorio.ufRepositorio.findOne({where: {codigoUF : deletarPeloId}});
 

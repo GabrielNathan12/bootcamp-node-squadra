@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { Bairro } from "./Bairro";
 import { Pessoa } from "./Pessoa";
 
@@ -12,7 +12,7 @@ import { Pessoa } from "./Pessoa";
         @JoinColumn({name: 'CODIGO_PESSOA'})
             pessoa: Pessoa;
         
-        @OneToOne(() => Bairro, (bairro) => bairro.enderecos)
+        @ManyToOne(() => Bairro, (bairro) => bairro.enderecos)
         @JoinColumn({name: 'CODIGO_BAIRRO'})
             bairro: Bairro;
         
@@ -22,7 +22,7 @@ import { Pessoa } from "./Pessoa";
         @Column({name: 'NUMERO', type: 'number'})
             numero: Number;
         
-        @Column({name:'COMPLEMENTO', type: 'varchar', nullable: true})
+        @Column({name:'COMPLEMENTO', type: 'varchar'})
             complemento: string;
         
         @Column({name: 'CEP', type:'varchar'})

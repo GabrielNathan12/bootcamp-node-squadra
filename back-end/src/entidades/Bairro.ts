@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne, OneToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from "typeorm";
 import { Municipio } from "./Municipio";
 import { Endereco } from "./Endereco";
 
-@Entity('Tb_BaiTB_BAIRRO')
+@Entity('TB_BAIRRO')
     export class Bairro{
         @PrimaryGeneratedColumn({name: 'CODIGO_BAIRRO', type: 'int'})
             codigoBairro: number;
@@ -13,6 +13,6 @@ import { Endereco } from "./Endereco";
             nome: string;
         @Column({name: 'STATUS', type:'int'})
             status: number;
-        @OneToOne(() => Endereco, (endereco) => endereco.bairro)
-            enderecos: Endereco;
+        @ManyToOne(() => Endereco, (endereco) => endereco.bairro)
+            enderecos: Endereco[];
     }

@@ -20,10 +20,10 @@ const repositorios: IRepositorios = {
 
 const ControladorGeral = new ControladorUf(repositorios);
 
-rotaUf.get('/uf',async (requisicao: Request, resposta: Response)=> ControladorGeral.listarDado(requisicao, resposta));
-rotaUf.get('/uf/:nome', async(requisicao: Request, resposta: Response) => ControladorGeral.listarDadosPeloNome(requisicao, resposta));
-rotaUf.post('/uf',async(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
-rotaUf.put('/uf',async(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
-rotaUf.delete('/uf/:iduf',async(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
+rotaUf.get('/uf', (requisicao: Request, resposta: Response)=> ControladorGeral.listarDado(requisicao, resposta));
+rotaUf.get('/uf/:nome', (requisicao: Request, resposta: Response) => ControladorGeral.listarDadosPeloNome(requisicao, resposta));
+rotaUf.post('/uf',(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
+rotaUf.put('/uf',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
+rotaUf.delete('/uf/:codigoUF',(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
 
 export default rotaUf;

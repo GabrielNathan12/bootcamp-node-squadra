@@ -3,35 +3,36 @@ import conectarBackend from '../../servidor/ConexaoServidor';
 
 const Bairro = () => {
   const [bairro, setBairro] = useState([]);
+
+  const [codigoMuncipio, setCodigoMunicipio] = useState(0);
   const [nome, setNome] = useState('');
-  const [sigla, setSigla] = useState('');
   const [status, setStatus] = useState(0);
 
   useEffect(() => {
-    const trazerListaUf = async () => {
+    const trazerListaBairro = async () => {
       try {
-        const response = await conectarBackend.get('/uf');
+        const response = await conectarBackend.get('/bairro');
         setBairro(response.data);
       } catch (error) {
         console.error('Erro ao obter os dados do servidor:', error);
       }
     };
 
-    trazerListaUf();
+    trazerListaBairro();
   }, []);
 
-  const cadastrarUf = async () => {
+  const cadastrarBairro = async () => {
     try {
-      const novaUf = {
+      const novoBairro = {
+        codigoMuncipio: codigoMuncipio,
         nome: nome,
-        sigla: sigla,
         status: status
       };
 
-      const response = await conectarBackend.post('/bairro', novaUf);
+      const response = await conectarBackend.post('/bairro', novoBairro);
       setBairro([...bairro, response.data]);
       setNome('');
-      setSigla('');
+      setCodigoMunicipio('');
       setStatus(0);
     } catch (error) {
       console.log(error);
@@ -41,20 +42,20 @@ const Bairro = () => {
   return (
     <div>
       <ul>
-        {bairro.map((uf) => (
-          <li key={uf.codigoUF}>
-            Nome: {uf.nome} Sigla: {uf.sigla} Status: {uf.status}
+        {bairro.map((ba) => (
+          <li key={ba.codigoBairro}>
+            Nome: {ba.nome}  Codigo Municipio: {ba.codigoMuncipio} Status: {ba.status}
           </li>
         ))}
       </ul>
       <div>
         <label>
-          Nome do Estado:
+          Nome Bairro:
           <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} />
         </label>
         <label>
-          Sigla:
-          <input type="text" value={sigla} onChange={(e) => setSigla(e.target.value)} />
+          Codigo Municipio:
+          <input type="number" value={codigoMuncipio} onChange={(e) => setCodigoMunicipio(e.target.value)} />
         </label>
         <label>
           Status:
@@ -67,7 +68,7 @@ const Bairro = () => {
           />
         </label>
         <div>
-          <button type="submit" onClick={cadastrarUf}>
+          <button type="submit" onClick={cadastrarBairro}>
             Confirmar
           </button>
         </div>
