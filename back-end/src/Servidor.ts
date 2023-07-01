@@ -6,6 +6,7 @@ import rotaBairro from './rotas/rotaBairro';
 import rotaEndereco from './rotas/rotaEndereco';
 import rotaPessoa from './rotas/rotaPessoa';
 import cors from 'cors';
+import rotaAutenticacao from './rotas/rotaAutenticacao';
 
 
 AppDataSource.initialize().then(()=>{
@@ -17,6 +18,7 @@ AppDataSource.initialize().then(()=>{
     servidor.use(rotaBairro);
     servidor.use(rotaEndereco);
     servidor.use(rotaPessoa);
+    servidor.use(rotaAutenticacao);
     console.log("Conexão realizada com a Oracle")
     return servidor.listen(process.env.DBPORTASER);
 });

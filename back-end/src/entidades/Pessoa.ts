@@ -11,7 +11,7 @@ import { Endereco } from "./Endereco";
             sobrenome: string;
         @Column({name: 'IDADE', type: 'int'})
             idade: number;
-        @Column({name: 'LOGIN', type:'varchar'})
+        @Column({name: 'LOGIN', type:'varchar', unique:true})
             login: string;
         @Column({name:'SENHA', type: 'varchar'})
             senha: string;

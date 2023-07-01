@@ -21,7 +21,11 @@ export class AtualizarPessoa{
     public async atualizarPessoa({codigoPessoa,nome,sobrenome,idade,login,senha, status}:IatualizarPessoa, requisicao: Request, resposta: Response){
         const pessoaRepositorio = this.repositorios.pessoaRepositorio;
         const pessoa = await pessoaRepositorio.findOne({where: {codigoPessoa:codigoPessoa}});
-        
+        const loginPessoa = await pessoaRepositorio.findOne({where: {login:login}});
+
+        if(loginPessoa && login !== pessoa?.login){
+            return resposta.status(400).json({mensagem: 'Email ja usado na aplicacao', status: '400'})
+        }
         if(!pessoa){
             return resposta.status(400).json({mensagem: 'Codigo pessoa nao encontrado', status:'400'});
         }
