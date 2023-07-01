@@ -18,9 +18,9 @@ const repositorios: IRepositorios = {
 const rotaPessoa = Router();
 const ControladorGeral = new ControladorPessoa(repositorios);
 
-rotaPessoa.get('/pessoa',(requisicao: Request, resposta: Response)=>  ControladorGeral.listarDado(requisicao, resposta));
-rotaPessoa.post('/pessoa',(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
-rotaPessoa.put('/pessoa',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
-rotaPessoa.delete('/pessoa/:idpessoa',(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
+rotaPessoa.get('/pessoa',(requisicao: Request, resposta: Response)=>  ControladorGeral.listarPessoa(requisicao, resposta));
+rotaPessoa.post('/pessoa',(requisicao: Request, resposta: Response)=> ControladorGeral.criarPessoa(requisicao, resposta));
+rotaPessoa.put('/pessoa',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarPessoa(requisicao, resposta));
+rotaPessoa.delete('/pessoa/:idpessoa',(requisicao: Request, resposta: Response)=> ControladorGeral.deletarPessoa(requisicao, resposta));
 
 export default rotaPessoa;

@@ -18,9 +18,9 @@ const repositorios: IRepositorios = {
 const rotaBairro = Router();
 const ControladorGeral = new ControladorBairro(repositorios);
 
-rotaBairro.get('/bairro',(requisicao: Request, resposta: Response)=> ControladorGeral.listarDado(requisicao, resposta));
-rotaBairro.post('/bairro',(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
-rotaBairro.put('/bairro',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
-rotaBairro.delete('/bairro/:idbairro',(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
+rotaBairro.get('/bairro',(requisicao: Request, resposta: Response)=> ControladorGeral.listarBairro(requisicao, resposta));
+rotaBairro.post('/bairro',(requisicao: Request, resposta: Response)=> ControladorGeral.criarBairro(requisicao, resposta));
+rotaBairro.put('/bairro',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarBairro(requisicao, resposta));
+rotaBairro.delete('/bairro/:idbairro',(requisicao: Request, resposta: Response)=> ControladorGeral.deletarBairro(requisicao, resposta));
 
 export default rotaBairro;

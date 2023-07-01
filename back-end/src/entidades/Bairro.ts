@@ -13,6 +13,6 @@ import { Endereco } from "./Endereco";
             nome: string;
         @Column({name: 'STATUS', type:'int'})
             status: number;
-        @ManyToOne(() => Endereco, (endereco) => endereco.bairro)
+        @ManyToOne(() => Endereco, (endereco) => endereco.codigoBairro)
             enderecos: Endereco[];
     }

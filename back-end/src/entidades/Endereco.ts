@@ -10,11 +10,11 @@ import { Pessoa } from "./Pessoa";
         
         @ManyToOne(()=> Pessoa, (pessoa) => pessoa.enderecos)
         @JoinColumn({name: 'CODIGO_PESSOA'})
-            pessoa: Pessoa;
+            codigoPessoa: Pessoa;
         
         @ManyToOne(() => Bairro, (bairro) => bairro.enderecos)
         @JoinColumn({name: 'CODIGO_BAIRRO'})
-            bairro: Bairro;
+            codigoBairro: Bairro;
         
         @Column({name: 'NOME_RUA', type: 'varchar'})
             nomeRua: string;

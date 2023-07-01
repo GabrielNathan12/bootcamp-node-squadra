@@ -18,10 +18,10 @@ const repositorios: IRepositorios = {
 const rotaEndereco = Router();
 const ControladorGeral = new ControladorEndereco(repositorios);
 
-rotaEndereco.get('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.listarDado(requisicao, resposta));
-rotaEndereco.post('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.adionarDado(requisicao, resposta));
-rotaEndereco.put('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarDado(requisicao, resposta));
-rotaEndereco.delete('/endereco/:idendereco',(requisicao: Request, resposta: Response)=> ControladorGeral.removerDado(requisicao, resposta));
+rotaEndereco.get('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.listarEndereco(requisicao, resposta));
+rotaEndereco.post('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.criarEndereco(requisicao, resposta));
+rotaEndereco.put('/endereco',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarEndereco(requisicao, resposta));
+rotaEndereco.delete('/endereco/:idendereco',(requisicao: Request, resposta: Response)=> ControladorGeral.deletarEndereco(requisicao, resposta));
 
 
 export default rotaEndereco;

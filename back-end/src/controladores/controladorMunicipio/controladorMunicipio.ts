@@ -1,118 +1,82 @@
-import { ParamsDictionary, Request, Response } from "express-serve-static-core";
-import { ControladorGeral } from "../ControladorGeral";
+import {  Request, Response } from "express-serve-static-core";
 import { IRepositorios } from "../../Irepositorios/Irepositorios";
-import { ParsedQs } from "qs";
+import { ListarMunicipio } from "./servicos/ListarMunicipio";
+import { CriarMunicipio } from "./servicos/CriarNovoMunicipio";
+import { AtualizarMunicipio } from "./servicos/AtualizarMunicipio";
+import { DeletarMunicipio } from "./servicos/DeletarMunicipio";
 
-export class ControladorMunicipio extends ControladorGeral{
-    public listarDadosPeloNome(requisicao: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, resposta: Response<any, Record<string, any>, number>): Promise<Response<any, Record<string, any>, number>> {
-        throw new Error("Method not implemented.");
-    }
+export class ControladorMunicipio{
+    
     private repositorio : IRepositorios;
 
     constructor(repositorios: IRepositorios){
-        super();
         this.repositorio = repositorios;
     }
 
-    public async removerDado(requisicao: Request, resposta: Response ) {
-        const deletarPeloId = parseInt(requisicao.params.idmunicipio);
-
+    public async listarMunicipio(requisicao: Request, resposta: Response){
         try{
-            const codigo_Municipio = await this.repositorio.municipioRepositorio.findOne({where: {codigoMunicipio : deletarPeloId}});
-
-            if(!codigo_Municipio){
-                return resposta.status(400).json({mensagem: 'Codigo do municipio não encontrado !'});
-            }
-            await this.repositorio.municipioRepositorio.remove(codigo_Municipio);
-
-            return resposta.status(200).json({mensagem: 'Deleção completada', status: await this.repositorio.municipioRepositorio.find({})});
-
+            const listarMunicipio = new ListarMunicipio(this.repositorio);
+            const municipio = await listarMunicipio.listarMunicipio(requisicao, resposta);
+            return municipio;
+        }catch(error){
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
-        catch(erro){
-            return resposta.status(500).json({mensagem: 'Erro no servidor: ' + erro});
-        }
-        
     }
 
-    public async listarDado(requisicao: Request, resposta: Response) {
+    public async criarMunicipio(requisicao: Request, resposta: Response){
         try{
-            const municipios = await this.repositorio.municipioRepositorio.find({
-                select: ['codigoMunicipio', 'codigoUF', 'nome','status']
-            });
-            return resposta.status(200).json(municipios);
+            const {codigoUF, nome, status} = requisicao.body;
+            const criarNovoMunicipio = new CriarMunicipio(this.repositorio);
+            
+            if(!codigoUF || !nome || !status){
+                return resposta.status(400).json({mensagem: 'Erro ao encontrar dados no Json', status: '400'});
+            }
+            if(!this.verificaStatus(Number(status))){
+                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
+            }    
+            const novoMuncipio = await criarNovoMunicipio.criarNovoMunicipio({codigoUF, nome, status}, requisicao, resposta);
+            return novoMuncipio;
+
+        }catch(error){
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
-        catch(erro){
-            return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro});
+    }
+    public async atualizarMunicipio(requisicao: Request, resposta: Response){
+        try{
+            const {codigoMunicipio, nome, status} = requisicao.body;
+            const atualizar = new AtualizarMunicipio(this.repositorio);
+            
+            if(!codigoMunicipio || !nome || !status){
+                return resposta.status(400).json({mensagem: 'Erro ao encontrar dados no Json', status: '400'});
+            }
+            if(!this.verificaStatus(Number(status))){
+                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
+            }
+
+            const municipio = await atualizar.atualizarMunicipio({codigoMunicipio, nome, status}, requisicao, resposta);
+            
+            return municipio;
+        }catch(error){
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
     }
     
-    public async atualizarDado(requisicao: Request, resposta: Response ) {
-        const {codigoMunicipio ,nome, status } = requisicao.body;
-       
+    public async deletarMunicipio(requisicao: Request, resposta: Response){
         try{
-            const pegarIdMunicipio = Number(codigoMunicipio);
-            const codigo_Municipio = await this.repositorio.municipioRepositorio.findOne({where: {codigoMunicipio : pegarIdMunicipio}});
-            const nome_municipio = await this.repositorio.municipioRepositorio.findOne({where : {nome: nome}});
-
-            if(!codigo_Municipio){
-                return resposta.status(400).json({mensagem : 'Codigo do municipio não encontrado', status: '400'});
-            }
-            if(nome_municipio){
-                return resposta.status(400).json({mensagem: 'Nome do municipio ja inserido', status: '400'});
-            }
-            if(!this.vericarStatus(Number(status))){
-                return resposta.status(400).json({mensagem: 'Status invalido !', status: '400'});
-            }
-
-
-            codigo_Municipio.nome =  nome   || codigo_Municipio.nome;
-            codigo_Municipio.status=  status  || codigo_Municipio.status;
-
-            await this.repositorio.municipioRepositorio.save(codigo_Municipio);
-
-            return resposta.status(200).json(await this.repositorio.municipioRepositorio.find());
-            
-        }catch(erro){
-            return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro })
+            const {codigoMunicipio} = requisicao.params;
+            const deletarPeloId = new DeletarMunicipio(this.repositorio);
+            const deletado = await deletarPeloId.deletarMunicipio({codigoMunicipio: Number(codigoMunicipio)}, requisicao, resposta);
+            return deletado;
+        }catch(error){
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
+        
+    }
+    private verificaStatus(status: number){
+        if(status == 0 || status == 1){
+            return true;
+        }
+        return false;
     }
 
-    public async adionarDado(requisicao: Request, resposta: Response) {
-        const {codigoUF ,nome, status} = requisicao.body;
-
-        try{
-
-            const verificarCodigoUF = await this.repositorio.ufRepositorio.findOne({where: {codigoUF:codigoUF}});
-
-            if(!nome || !status || !codigoUF){
-                return resposta.status(400).json({mensagem: "Nome ou Status e Codigo_UF não encontrados no Json !", status: '400'});
-            }
-            else {
-                const verificarUmNome = await this.repositorio.municipioRepositorio.findOne({where : {nome: nome} });
-
-                if(!verificarCodigoUF){
-                    return resposta.status(400).json({mensagem: 'Codigo Uf nao encontrado', status: '400'});
-                }
-                if(verificarUmNome){
-                    return resposta.status(400).json({mensagem: 'Nome já inserido no banco', status: '400'});
-                }
-                if(!this.vericarStatus(Number(status))){
-                    return resposta.status(400).json({mensagem: 'Status inválido', status:'400'})
-                }
-
-                const novoMunicipio = this.repositorio.municipioRepositorio.create(
-                    {
-                        codigoUF: codigoUF,
-                        nome: nome,
-                        status: status
-                    }
-                );
-                await this.repositorio.municipioRepositorio.save(novoMunicipio);
-                return resposta.status(200).json(await this.repositorio.municipioRepositorio.find({relations:{ codigoUF : true}}));
-            }
-        }
-        catch(erro){
-            return resposta.status(500).json({mensagem: 'Erro interno servidor',erro});
-        }
-    }
 }

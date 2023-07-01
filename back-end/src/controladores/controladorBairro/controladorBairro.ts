@@ -1,137 +1,82 @@
 import {Request, Response } from "express-serve-static-core";
-import { ControladorGeral } from "../ControladorGeral";
 import { IRepositorios } from "../../Irepositorios/Irepositorios";
+import { CriarBairro } from "./servicos/CriarBairro";
+import { ListarBairro } from "./servicos/ListarBairro";
+import { AtualizarBairro } from "./servicos/AtualizarBairro";
+import { DeletarBairro } from "./servicos/DeletarBairro";
 
-export class ControladorBairro extends ControladorGeral{
-    public async listarDadosPeloNome(requisicao: Request, resposta: Response) {
-        
-        try {
-         
-            const nome = requisicao.query.nome;
-        
-            console.log(nome);
-            if (!nome) {
-                return resposta.status(400).json({ mensagem: 'Nome não encontrado' });
-            }
-      
-            const ufEncontrada = await this.repositorio.ufRepositorio.findOne({
-                where: { nome: String(nome) }
-          });
-      
-          if (!ufEncontrada) {
-            return resposta.status(404).json({ mensagem: 'UF não encontrada' });
-          }
-      
-          return resposta.status(200).json(ufEncontrada);
-      
-        } catch (erro) {
-          return resposta.status(500).json({ mensagem: 'Erro interno no servidor: ' + erro });
-        }
-      }
-      
-    private repositorio: IRepositorios;
+export class ControladorBairro{
+    private repositorios: IRepositorios;
     
-    constructor(repositorios: IRepositorios){
-        super();
-        this.repositorio = repositorios;
+    constructor(repositorio: IRepositorios){
+        this.repositorios = repositorio;
     }
 
-    public async removerDado(requisicao: Request, resposta: Response ) {
-        const deletarPeloId = parseInt(requisicao.params.idbairro);
-
+    public async criarBairro(requisicao: Request, resposta: Response){
         try{
-            const codigo_bairro = await this.repositorio.bairroRepositorio.findOne({where: {codigoBairro : deletarPeloId}});
-
-            if(!codigo_bairro){
-                return resposta.status(400).json({mensagem: 'Codigo do bairro não encontrado !', status: '400'});
-            }
-            await this.repositorio.bairroRepositorio.remove(codigo_bairro);
-
-            return resposta.status(200).json({mensagem: 'Deleção completada', status: await this.repositorio.bairroRepositorio.find()});
-
-        }
-        catch(erro){
-            return resposta.status(500).json({mensagem: 'Erro no servidor: ' + erro});
-        }
-        
-    }
-
-    public async listarDado(requisicao: Request, resposta: Response) {
-        try{
-            const bairros = await this.repositorio.bairroRepositorio.find();
-
-            return resposta.status(200).json([bairros]);
-        }
-        catch(erro){
-            return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro});
-        }
-    }
-    
-    public async atualizarDado(requisicao: Request, resposta: Response ) {
-        const {codigoBairro ,nome, status } = requisicao.body;
-
-        try{
-            const pegarIdBairro = Number(codigoBairro);
-            const codigo_bairro = await this.repositorio.bairroRepositorio.findOne({where: {codigoBairro : pegarIdBairro}});
-            const nome_bairro = await this.repositorio.bairroRepositorio.findOne({where : {nome: nome}});
-
-            if(!codigo_bairro){
-                return resposta.status(400).json({mensagem : 'Codigo do bairro não encontrado', status: '400'});
-            }
-            if(nome_bairro){
-                return resposta.status(400).json({mensagem: 'Bairro ja inserido', status: '400'});
-            }
-            if(!this.vericarStatus(Number(status))){
-                return resposta.status(400).json({mensagem: 'Status inválido', status:'400'})
-            }
-
-            codigo_bairro.nome =  nome   || codigo_bairro.nome;
-            codigo_bairro.status=  status  || codigo_bairro.status;
-
-            await this.repositorio.bairroRepositorio.save(codigo_bairro);
-
-            return resposta.status(200).json(this.repositorio.bairroRepositorio.find({}));
+            const {codigoMunicipio, nome, status} = requisicao.body;
+            const criarNovoBairro = new CriarBairro(this.repositorios);
             
+            if(!codigoMunicipio || !nome || !status){
+                return resposta.send(400).json({mensagem: 'Erro ao encontrar os campus no Json', status: '400'});
+            }
+
+            if(!this.verificaStatus(Number(status))){
+                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
+            }
+
+            const novoBairro = await criarNovoBairro.criarBairro({codigoMunicipio, nome, status}, requisicao, resposta);
+            return novoBairro;
+
+        }catch(error){
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
+        }
+        
+    }
+
+    public async listarBairro(requisicao: Request, resposta: Response){
+        try{    
+            const listarBairro = new ListarBairro(this.repositorios);
+            const bairro = await listarBairro.listarBairro(requisicao, resposta);
+            return bairro;
         }catch(erro){
-            return resposta.status(500).json({mensagem: 'Erro no servidor ' + erro })
+            return resposta.status(500).json({mensagem: 'Erro interno no servidor', status:'500'});
+        }
+    }  
+
+    public async atualizarBairro(requisicao: Request, resposta: Response){
+        
+        try{
+            const{codigoBairro, nome, status} = requisicao.body;
+            const atualizar = new AtualizarBairro(this.repositorios);
+        
+            if(!this.verificaStatus(Number(status))){
+                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
+            }
+
+            const bairro = await atualizar.atualizarBairro({codigoBairro, nome, status}, requisicao, resposta);
+            return bairro;
+
+        }catch(error){
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
     }
 
-    public async adionarDado(requisicao: Request, resposta: Response) {
-        const {codigoMunicipio,nome, status} = requisicao.body;
-
+    public async deletarBairro(requisicao: Request, resposta: Response){
         try{
-            const codigo_municipio_ = await this.repositorio.municipioRepositorio.findOne({where: {codigoMunicipio: codigoMunicipio}})
-            if(!nome || !status){
-                return resposta.status(400).json({mensagem: "Nome não encontrados !"});
-            }
-            else {
-                const verificarUmNome = await this.repositorio.bairroRepositorio.findOne({where : {nome: nome} });
-
-                if(verificarUmNome){
-                    return resposta.status(400).json({mensagem: 'Nome já inserido no banco', status: '400'});
-                }
-
-                if(!codigo_municipio_){
-                    return resposta.status(400).json({mensagem: 'Codigo do municipio nao encontrado', status: '400'});
-                }
-                if(!this.vericarStatus(Number(status))){
-                    return resposta.status(400).json({mensagem: 'Status inválido', status:'400'})
-                }
-
-                const novoBairro = this.repositorio.bairroRepositorio.create(
-                    {
-                        codigoMunicipio: codigoMunicipio,
-                        nome: nome,
-                        status: status
-                    }
-                );
-                await this.repositorio.bairroRepositorio.save(novoBairro);
-                return resposta.status(200).json(this.repositorio.bairroRepositorio.find({}));
-            }
+            const {codigoBairro} = requisicao.params;
+            const deletarPeloId = new DeletarBairro(this.repositorios);
+            const deletado = await deletarPeloId.deletarBairro({codigoBairro: Number(codigoBairro)}, requisicao, resposta);
+            return deletado;
+        }catch(error){
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
-        catch(erro){
-            return resposta.status(400).json({mensagem :'Erro interno servidor:' + erro});
+    }
+
+    private verificaStatus(status: number){
+        if(status == 0 || status == 1){
+            return true;
         }
+        return false;
     }
 }
