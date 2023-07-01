@@ -8,16 +8,18 @@ import { pessoaRepositorio } from "../repositorios/pessoaRepositorio";
 import { ControladorAutenticacao } from "../controladores/controladorPessoa/ControladorAutenticacao";
 
 const repositorios: IRepositorios = {
-    ufRepositorio,
-    bairroRepositorio,
-    municipioRepositorio,
-    enderecoRepositorio,
-    pessoaRepositorio,
-
+  ufRepositorio,
+  bairroRepositorio,
+  municipioRepositorio,
+  enderecoRepositorio,
+  pessoaRepositorio,
 };
-const rotaAutenticacao = Router();
-const ControladorGeral = new ControladorAutenticacao(repositorios);
 
-rotaAutenticacao.post('/',(requisicao: Request, resposta: Response)=>  ControladorGeral.criarSecao(requisicao, resposta));
+const rotaAutenticacao = Router();
+const controladorAutenticacao = new ControladorAutenticacao(repositorios);
+
+rotaAutenticacao.post("/autenticar", (requisicao: Request, resposta: Response) =>
+  controladorAutenticacao.criarSecao(requisicao, resposta)
+);
 
 export default rotaAutenticacao;

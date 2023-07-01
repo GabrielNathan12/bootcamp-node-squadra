@@ -9,7 +9,7 @@ export class ListaEndereco{
     public async litaEndereco(requisicao: Request, reposta:Response){
         const enderecoReposito = this.repositorios.enderecoRepositorio;
 
-        return reposta.status(200).json(await enderecoReposito.find({}));
+        return reposta.status(200).json(await enderecoReposito.find({relations:{codigoBairro: true, codigoPessoa:true}}));
         
     }
 }

@@ -14,6 +14,7 @@ export class ControladorPessoa {
 
    public async criarPessoa(requisicao:Request, resposta: Response){
         try{
+            
             const {nome, sobrenome, idade, login , senha, status} = requisicao.body;
             const criarNovaPessoa = new CriarPessoa(this.repositorios);
 
@@ -34,6 +35,7 @@ export class ControladorPessoa {
 
    public async listarPessoa(requisicao: Request, resposta: Response){
     try{
+       
         const litarPessoa = new ListarPessoa(this.repositorios);
         const pessoas = await litarPessoa.listarPessoas(requisicao, resposta);
         return pessoas;

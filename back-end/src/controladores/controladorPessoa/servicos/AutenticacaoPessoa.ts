@@ -1,34 +1,46 @@
 import { Request, Response } from "express";
 import { IRepositorios } from "../../../Irepositorios/Irepositorios";
 import { compare } from "bcryptjs";
+import { sign } from "jsonwebtoken";
+import { Pessoa } from "../../../entidades/Pessoa";
+import autores from '../../../configuracoes/autores';
 
-interface Iautencicar{
-    login: string, 
-    senha: string,
+interface IAutenticar {
+  login: string;
+  senha: string;
 }
 
-export class AutenticacaoPessoa{
-    private repositorios: IRepositorios;
+interface IAutenticado {
+  pessoa: Pessoa;
+  token: string;
+}
 
-    constructor(repositorio: IRepositorios) {
-        this.repositorios = repositorio;
-    }
+export class AutenticacaoPessoa {
+  private repositorios: IRepositorios;
 
-    public async criarAutenticacao({login, senha}: Iautencicar,requisicao: Request,resposta: Response ){
-        const pessoaRepositorio =  this.repositorios.pessoaRepositorio;
-        const loginPessoa = await pessoaRepositorio.findOne({where: {login:login}});
-        
-        if(!loginPessoa){
-            return resposta.status(400).json({mensagem: 'Email ou senha invalidos', status: '400'}); 
-        }
-        const senhaConfirmar = await compare(senha,loginPessoa.senha);
+  constructor(repositorios: IRepositorios) {
+    this.repositorios = repositorios;
+  }
 
-        if(!senhaConfirmar){
-            return resposta.status(400).json({mensagem: 'Senha invalida', status: '400'})
-        }
-        
-        return resposta.status(200).json(loginPessoa);
+  public async criarAutenticacao({ login, senha }: IAutenticar, requisicao: Request, resposta: Response): Promise<IAutenticado> {
+    const pessoaRepositorio = this.repositorios.pessoaRepositorio;
+    const pessoa = await pessoaRepositorio.findOne({ where: { login } });
     
-        
+    if (!pessoa) {
+      resposta.status(400).json({ mensagem: "Email inválido", status: "400" });
+      throw new Error("Email inválido");
     }
+
+    const senhaConfirmada = await compare(senha, pessoa.senha);
+
+    if (!senhaConfirmada) {
+      resposta.status(400).json({ mensagem: "Senha inválida", status: "400" });
+      throw new Error("Senha inválida");
+    }
+
+    const token = sign({ pessoaId: pessoa.codigoPessoa }, autores.jwt.segreedo, { expiresIn: autores.jwt.expirado,
+    });
+
+    return { pessoa, token };
+  }
 }
