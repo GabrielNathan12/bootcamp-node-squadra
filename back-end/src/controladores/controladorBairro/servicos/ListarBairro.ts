@@ -10,6 +10,6 @@ export class ListarBairro{
 
     public async listarBairro(requisicao: Request, resposta: Response){
         const repositorio = this.repositorios.bairroRepositorio;
-        return resposta.status(200).json(await repositorio.find({}));
+        return resposta.status(200).json(await repositorio.find({relations:{enderecos:true}}));
     }
 }

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Municipio } from "./Municipio";
 import { Endereco } from "./Endereco";
 
@@ -13,6 +13,6 @@ import { Endereco } from "./Endereco";
             nome: string;
         @Column({name: 'STATUS', type:'int'})
             status: number;
-        @ManyToOne(() => Endereco, (endereco) => endereco.codigoBairro)
+        @OneToMany(() => Endereco, (endereco) => endereco.codigoBairro)
             enderecos: Endereco[];
     }

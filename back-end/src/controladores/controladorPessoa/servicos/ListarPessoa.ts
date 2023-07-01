@@ -8,6 +8,6 @@ export class ListarPessoa{
     }
     public async listarPessoas(requisicao:Request, resposta: Response){
         const pessoaRepositorio = this.repositorios.pessoaRepositorio;
-        return resposta.status(200).json(await pessoaRepositorio.find({})); 
+        return resposta.status(200).json(await pessoaRepositorio.find({relations:{ enderecos: true}})); 
     }
 }
