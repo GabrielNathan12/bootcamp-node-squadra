@@ -1,7 +1,6 @@
 import { Request, Response } from "express-serve-static-core";
 import { IRepositorios } from "../../Irepositorios/Irepositorios";
 import { ListarUFs } from "./servicos/ListarUFs";
-import { ListarPorNomeUf } from "./servicos/ListarPorNomeUf";
 import { CriarUF } from "./servicos/CriarUF";
 import { AtualizarUF } from "./servicos/AtualizarUF";
 import { DeletarUF } from "./servicos/DeletarUF";
@@ -24,22 +23,6 @@ export class ControladorUF{
             return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
        
-    }
-
-    public async listarNome(requisicao: Request, resposta: Response){
-        try{
-            const {nome} = requisicao.params;
-
-            const litarPorNome = new ListarPorNomeUf(this.repositorios);
-
-            const ufs = await litarPorNome.listarPorNome({nome}, requisicao, resposta);
-
-            return ufs;
-
-        }catch(error){
-            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
-        }
-
     }
 
     public async criarUf(requisicao: Request, resposta: Response){

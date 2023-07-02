@@ -22,7 +22,6 @@ const repositorios: IRepositorios = {
 const ControladorGeral = new ControladorUF(repositorios);
 
 rotaUf.get('/uf' ,(requisicao: Request, resposta: Response)=> ControladorGeral.litarUF(requisicao, resposta));
-rotaUf.get('/uf/:nome', (requisicao: Request, resposta: Response) => ControladorGeral.listarNome(requisicao, resposta));
 rotaUf.post('/uf',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.criarUf(requisicao, resposta));
 rotaUf.put('/uf',eAutenticado, (requisicao: Request, resposta: Response)=> ControladorGeral.atualizarUf(requisicao, resposta));
 rotaUf.delete('/uf/:codigoUF', eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.deletarUf(requisicao, resposta));

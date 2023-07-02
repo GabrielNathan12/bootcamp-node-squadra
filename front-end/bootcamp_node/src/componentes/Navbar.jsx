@@ -1,27 +1,26 @@
-import { Link } from "react-router-dom";
 import './Navbar.css';
 
 const Navbar = () => {
   return (
     <nav className="navbar">
         <h2>
-            <Link to={'/'}>Home</Link>
+           <a href="/">Home</a>
         </h2>
         <ul>
             <li>
-                <Link to={'/uf'} className="new-btn">UFs</Link>
+            <a href="/uf" className="new-btn">UFs</a>
             </li>
             <li>
-                <Link to={'/municipio'} className="new-btn">Municipio</Link>
+                <a href="/municipio" className="new-btn">Municipio</a>
             </li>
             <li>
-                <Link to={'/bairro'} className="new-btn">Bairro</Link>
+                <a href="/bairro" className="new-btn">Bairro</a>
             </li>
             <li>
-                <Link to={'/endereco'} className="new-btn">Endereço</Link>
+                <a href="/endereco" className="new-btn">Endereço</a>
             </li>
             <li>
-                <Link to={'/pessoa'} className="new-btn">Pessoa</Link>
+                <a href="/pessoa" className="new-btn">Pessoa</a>
             </li>
         </ul>
     </nav>
