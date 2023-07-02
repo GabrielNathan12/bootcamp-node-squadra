@@ -1,0 +1,26 @@
+.novo-uf h2{
+    text-align: center;
+    margin:bottom: 1rem;
+}
+
+form{
+    max-width: 500px;
+    width: 100px;
+    margin: 0 auto;
+}
+.form-control{
+    display: flex;
+    flex:direction: column;
+    margin-bottom: 1rem;
+}
+
+.form-control label{
+    margin-bottom: 0.5rem;
+}
+
+
+.form-control input {
+    padding: .5rem,
+    border-radius: 5px;
+    border: none;
+}

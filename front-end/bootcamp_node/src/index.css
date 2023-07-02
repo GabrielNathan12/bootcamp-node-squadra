@@ -1,13 +1,29 @@
+*{
+  margin: 0;
+  padding: 0;
+  font-family: "Blinker"
+}
+
 body{
-  padding: 50px;
-  background-color: #efefef;
-  text-align: center;
-  
+  background-color: #0e1217;
+  color: #FFF;
 }
-h1{
-  color: #333;
+
+ul{
+  list-style: none;
 }
+
+a{
+  text-decoration: none;
+  color: #fff;
+  opacity: 0.7;
+  transition: 0.3s; 
+}
+
+a:hover{
+  opacity: 1;
+}
+
 p{
-  background-color: #999;
-  padding: 10px;
+  color: #a9abb3;
 }

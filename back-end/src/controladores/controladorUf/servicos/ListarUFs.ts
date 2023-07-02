@@ -10,6 +10,6 @@ export class ListarUFs{
     public async listarUf(requisicao: Request, resposta: Response){
         const ufRepositorio =  this.repositorioUf.ufRepositorio;
 
-        return resposta.status(200).json(await ufRepositorio.find({relations:{ municipios:true}}));
+        return resposta.status(200).json(await ufRepositorio.find({}));
     }
 }
