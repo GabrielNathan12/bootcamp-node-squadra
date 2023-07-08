@@ -12,13 +12,16 @@ export class ControladorUF{
     constructor(repositorio: IRepositorios){
         this.repositorios = repositorio;
     }
+
     public async litarUF(requisicao: Request, resposta: Response){
         try{
-            const listaUf = new ListarUFs(this.repositorios);
 
+            const listaUf = new ListarUFs(this.repositorios);
+            
             const ufs = await listaUf.listarUf(requisicao, resposta);
     
             return ufs;
+            
         }catch(error){
             return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
@@ -81,7 +84,7 @@ export class ControladorUF{
     }
 
     private verificaQtdSiglas(sigla: String){
-        if(sigla.length == 2){
+        if(sigla.length === 2){
             return true;
         }
         return false;
