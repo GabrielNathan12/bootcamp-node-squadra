@@ -13,9 +13,23 @@ const Pessoa = () => {
   const [status, setStatus] = useState('');
 
   const criarPessoa = async () => {
-    const novaPessoa = { nome, sobrenome, idade, login, senha, status };
+   if(!nome || !sobrenome || !idade || !login || !senha || !status){
+    alert("Por favor preecha todos os campus");
+   }
+
+   const iStatus = parseInt(status);
+
+   const novaPessoa = {nome, sobrenome, idade, login, senha,iStatus};
+
+   try{
     await ConectarBackend.post('/pessoa', novaPessoa);
+    alert("Pessoa incluida com sucesso")
     navegacao('/');
+
+    }
+    catch(error){
+      alert(error);
+   }
   };
 
   return (
@@ -24,27 +38,27 @@ const Pessoa = () => {
       <form>
         <div className="form-control">
           <label htmlFor="nome">Nome:</label>
-          <input type="text" name="nome" placeholder="Digite o nome" onChange={(e) => setNome(e.target.value)} />
+          <input type="text" name="nome" value={nome} placeholder="Digite o nome" onChange={(e) => setNome(e.target.value)} />
         </div>
         <div className="form-control">
           <label htmlFor="sobrenome">Sobrenome:</label>
-          <input type="text" name="sobrenome" placeholder="Digite o sobrenome" onChange={(e) => setSobrenome(e.target.value)} />
+          <input type="text" name="sobrenome" value={sobrenome} placeholder="Digite o sobrenome" onChange={(e) => setSobrenome(e.target.value)} />
         </div>
         <div className="form-control">
           <label htmlFor="idade">Idade:</label>
-          <input type="number" name="idade" placeholder="Digite a idade" onChange={(e) => setIdade(e.target.value)} />
+          <input type="number" name="idade" value={idade} placeholder="Digite a idade" onChange={(e) => setIdade(e.target.value)} />
         </div>
         <div className="form-control">
           <label htmlFor="login">Login:</label>
-          <input type="text" name="login" placeholder="Digite o login" onChange={(e) => setLogin(e.target.value)} />
+          <input type="text" name="login" value={login} placeholder="Digite o login" onChange={(e) => setLogin(e.target.value)} />
         </div>
         <div className="form-control">
           <label htmlFor="senha">Senha:</label>
-          <input type="password" name="senha" placeholder="Digite a senha" onChange={(e) => setSenha(e.target.value)} />
+          <input type="password" name="senha" value={senha} placeholder="Digite a senha" onChange={(e) => setSenha(e.target.value)} />
         </div>
         <div className="form-control">
           <label htmlFor="status">Status:</label>
-          <input type="text" name="status" placeholder="Digite o status" onChange={(e) => setStatus(e.target.value)} />
+          <input type="text" name="status" value={status} placeholder="Digite o status" onChange={(e) => setStatus(e.target.value)} />
         </div>
         <button type="submit" onClick={criarPessoa}>
           Enviar

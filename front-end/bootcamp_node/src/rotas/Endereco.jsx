@@ -10,15 +10,24 @@ const Endereco = () => {
   const [nomeRua, setNomeRua] = useState();
   const [numero, setNumero] = useState();
   const [complemento, setComplemento] = useState();
+  const [cep, setCep] = useState();
   const [status, setStatus] = useState();
 
   const criarEndereco = async () =>{
-    const novoMuncipio = {codigoPessoa, codigoBairro, nomeRua,numero,complemento, status};
+    if(!codigoPessoa || !codigoBairro || !nomeRua || !numero || !complemento || !status){
+      alert("Por favor preencha todos os campus");
+    }
 
-    await ConectarBackend.post('/pessoa',{
-      body: novoMuncipio
-    });
-    navegacao('/');
+    const iStatus = parseInt(status);
+    const novoEndereco = {codigoPessoa, codigoBairro, nomeRua, numero, complemento, cep, iStatus};
+
+    try{
+      await ConectarBackend.post('/endereco', novoEndereco);
+      alert("Endereco incluido com sucesso");
+      navegacao('/');
+    }catch(error){ 
+      alert(error);
+    }
   }
   
   
@@ -28,37 +37,37 @@ const Endereco = () => {
       <form>
         <div className="form-control">
           <label htmlFor="title">Codigo Pessoa:</label>
-          <input type="text" name="codigo-pessoa" placeholder="Digite o codigo da pessoa" onChange={(e => setCodigoPessoa(e.target.value))}/>
+          <input type="text" name="codigo-pessoa" value={codigoPessoa} placeholder="Digite o codigo da pessoa" onChange={(e => setCodigoPessoa(e.target.value))}/>
         </div>
         <div className="form-control">
           <label htmlFor="nome">Codigo do Bairro:</label>
-          <input type="text" name="codigo-bairro" placeholder="Digite o codigo do bairro"onChange={(e => setCodigoBairro(e.target.value))}/>
+          <input type="text" name="codigo-bairro" value={codigoBairro} placeholder="Digite o codigo do bairro"onChange={(e => setCodigoBairro(e.target.value))}/>
         </div>
         <div className="form-control">
           <label htmlFor="status">Nome da Rua:</label>
          
-          <input type="text" name="nome-rua" placeholder="O nome da Rua" min={0} onChange={(e => setNomeRua(e.target.value))}/>
+          <input type="text" name="nome-rua"  value={nomeRua} placeholder="O nome da Rua" min={0} onChange={(e => setNomeRua(e.target.value))}/>
         </div>
         <div className="form-control">
           <label htmlFor="status">Numero da Rua:</label>
          
-          <input type="text" name="status" placeholder="Numero da Rua" onChange={(e => setNumero(e.target.value))}/>
+          <input type="text" name="numero-rua"  value={numero} placeholder="Numero da Rua" onChange={(e => setNumero(e.target.value))}/>
         </div>
         <div className="form-control">
-          <label htmlFor="status">Complemento:</label>
+          <label htmlFor="complemeto">Complemento:</label>
          
-          <input type="text" name="status" placeholder="Digite o complemento" onChange={(e => setComplemento(e.target.value))}/>
+          <input type="text" name="complemeto" value={complemento} placeholder="Digite o complemento" onChange={(e => setComplemento(e.target.value))}/>
         </div>
         <div className="form-control">
-          <label htmlFor="status">CEP:</label>
+          <label htmlFor="cep">CEP:</label>
          
-          <input type="text" name="status" placeholder="Digite o CEP" onChange={(e => setStatus(e.target.value))}/>
+          <input type="text" name="cep" value={cep} placeholder="Digite o CEP" onChange={(e => setCep(e.target.value))}/>
         </div>
         
         <div className="form-control">
           <label htmlFor="status">Status:</label>
          
-          <input type="number" name="status" placeholder="Digite o Status" min={0} max={1} onChange={(e => setStatus(e.target.value))}/>
+          <input type="number" name="status" value={status} placeholder="Digite o Status" min={0} max={1} onChange={(e => setStatus(e.target.value))}/>
         </div>
         
         <button type="submit" onClick={criarEndereco}>Enviar</button>

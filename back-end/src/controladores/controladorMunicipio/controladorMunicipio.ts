@@ -28,7 +28,7 @@ export class ControladorMunicipio{
             const {codigoUF, nome, status} = requisicao.body;
             const criarNovoMunicipio = new CriarMunicipio(this.repositorio);
             
-            if(!codigoUF || !nome || !status){
+            if(codigoUF  === undefined || nome === undefined || status === undefined){
                 return resposta.status(400).json({mensagem: 'Erro ao encontrar dados no Json', status: '400'});
             }
             if(!this.verificaStatus(Number(status))){

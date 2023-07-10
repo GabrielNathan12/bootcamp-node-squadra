@@ -11,13 +11,24 @@ const Bairro = () => {
 
 
   const criarBairro = async () =>{
-    const novoBairro = {codigoMunicipio, nome, status};
+     
+    if(!codigoMunicipio || !nome || !status){
+      alert("Por favor preecha todos os campos");
+    }
 
-    await ConectarBackend.post('/bairro',{
-      body: novoBairro
-    });
-    navegacao('/');
-  }
+    const iStatus = parent(status);
+
+    const novoBairro = {codigoMunicipio, nome, iStatus};
+    try{
+        await ConectarBackend.post('/bairro', novoBairro)
+        navegacao('/');
+        alert("Bairro incluido com sucesso");
+    }
+    catch(error){
+      alert(error)
+    }
+  };
+  
   
   
   return (
@@ -26,16 +37,16 @@ const Bairro = () => {
       <form>
         <div className="form-control">
           <label htmlFor="title">Codigo do Município:</label>
-          <input type="text" name="codigo-estado" placeholder="Digite o codigo do municipio" onChange={(e => setCodigoMunicipio(e.target.value))}/>
+          <input type="text" name="codigo-municipio" value={codigoMunicipio} placeholder="Digite o codigo do municipio" onChange={(e => setCodigoMunicipio(e.target.value))}/>
         </div>
         <div className="form-control">
           <label htmlFor="nome">Nome do Bairro:</label>
-          <input type="text" name="title" placeholder="Digite o nome do bairro"onChange={(e => setNome(e.target.value))}/>
+          <input type="text" name="title" value={nome} placeholder="Digite o nome do bairro"onChange={(e => setNome(e.target.value))}/>
         </div>
         <div className="form-control">
           <label htmlFor="status">Status:</label>
          
-          <input type="number" name="status" placeholder="Digite o Status" min={0} max={1} onChange={(e => setStatus(e.target.value))}/>
+          <input type="number" name="status" value={status} placeholder="Digite o Status" min={0} max={1} onChange={(e => setStatus(e.target.value))}/>
         </div>
         <button type="submit" onClick={criarBairro}>Enviar</button>
       </form>

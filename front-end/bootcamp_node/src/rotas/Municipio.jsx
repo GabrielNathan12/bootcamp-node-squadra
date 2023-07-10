@@ -9,33 +9,41 @@ const Municipio = () => {
   const [nome, setNome] = useState();
   const [status, setStatus] = useState();
 
-
   const criarMunicipio = async () =>{
-    const novoMuncipio = {codigoUF, nome, status};
+    
+    if(!codigoUF || !nome || !status){
+      alert("Por favor preecha todos os campos");
+    }
 
-    await ConectarBackend.post('/municipio',{
-      body: novoMuncipio
-    });
-    navegacao('/');
-  }
-  
+    const iStatus = parent(status);
+
+    const novoMuncipio = {codigoUF, nome, iStatus};
+    try{
+        await ConectarBackend.post('/municipio', novoMuncipio)
+        navegacao('/');
+        alert("Municipio incluido com sucesso");
+    }
+    catch(error){
+      alert(error)
+    }
+  };
   
   return (
     <div className="novo-municipio">
       <h2>Inserir novo Município</h2>
-      <form>
+      <form onSubmit={criarMunicipio}>
         <div className="form-control">
           <label htmlFor="title">Codigo do Estado:</label>
-          <input type="text" name="codigo-estado" placeholder="Digite o codigo do Estado" onChange={(e => setCodigoUF(e.target.value))}/>
+          <input type="text" name="codigo-estado" value={codigoUF} placeholder="Digite o codigo do Estado" onChange={(e => setCodigoUF(e.target.value))}/>
         </div>
         <div className="form-control">
           <label htmlFor="nome">Nome do Municipio:</label>
-          <input type="text" name="title" placeholder="Digite o nome do municipio"onChange={(e => setNome(e.target.value))}/>
+          <input type="text" name="title" value={nome} placeholder="Digite o nome do municipio"onChange={(e => setNome(e.target.value))}/>
         </div>
         <div className="form-control">
           <label htmlFor="status">Status:</label>
          
-          <input type="number" name="status" placeholder="Digite o Status" min={0} max={1} onChange={(e => setStatus(e.target.value))}/>
+          <input type="number" name="status" value={status} placeholder="Digite o Status" min={0} max={1} onChange={(e => setStatus(e.target.value))}/>
         </div>
         <button type="submit" onClick={criarMunicipio}>Enviar</button>
       </form>

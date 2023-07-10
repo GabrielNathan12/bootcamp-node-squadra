@@ -22,6 +22,9 @@ const Navbar = () => {
             <li>
                 <a href="/pessoa" className="new-btn">Pessoa</a>
             </li>
+            <li>
+                <a href="/autenticar" className="new-btn">Login</a>
+            </li>
         </ul>
     </nav>
   )

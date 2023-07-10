@@ -13,5 +13,5 @@ export const AppDataSource = new DataSource({
     port: porta,
     database: process.env.DBDATA,
     entities: [`${__dirname}/**/entidades/*.{ts,js}`],
-    migrations:[`${__dirname}/**/migracoes/*.{ts,js}`]
+    migrations:[`${__dirname}/**/migracoes/*.{ts,js}`],
 })

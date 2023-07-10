@@ -26,7 +26,7 @@ export class ControladorEndereco{
             
             const criarNovoEndereco = new CriarEndereco(this.repositorio);
 
-            if(!codigoPessoa || !codigoBairro || !nomeRua || !numero || !complemento || !cep || !status){
+            if(codigoPessoa === undefined || codigoBairro === undefined || nomeRua === undefined || numero === undefined || complemento === undefined || cep === undefined|| status === undefined){
                 return resposta.status(400).json({mensagem: 'Erro ao ler os dados no Json, falta campos', status: '400'});
             }
             if(!this.verificarStatus(Number(status))){

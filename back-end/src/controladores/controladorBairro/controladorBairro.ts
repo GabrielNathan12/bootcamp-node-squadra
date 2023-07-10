@@ -17,7 +17,7 @@ export class ControladorBairro{
             const {codigoMunicipio, nome, status} = requisicao.body;
             const criarNovoBairro = new CriarBairro(this.repositorios);
             
-            if(!codigoMunicipio || !nome || !status){
+            if(codigoMunicipio === undefined || nome === undefined || status === undefined){
                 return resposta.send(400).json({mensagem: 'Erro ao encontrar os campus no Json', status: '400'});
             }
 

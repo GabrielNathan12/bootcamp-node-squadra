@@ -18,7 +18,7 @@ export class ControladorPessoa {
             const {nome, sobrenome, idade, login , senha, status} = requisicao.body;
             const criarNovaPessoa = new CriarPessoa(this.repositorios);
 
-            if(!nome || !sobrenome || !idade || !login || !senha || !status){
+            if(nome === undefined || sobrenome === undefined || idade === undefined || login === undefined || senha === undefined || status === undefined){
                 return resposta.status(400).json({mensagem: 'Erro ao encontrar dados no Json', status:'400'})
             }
             if(!this.verificarStatus(Number(status))){
@@ -73,7 +73,7 @@ export class ControladorPessoa {
     }
    }
    private verificarStatus(status: number){
-        if(status == 0 || status == 1){
+        if(status === 0 || status === 1){
             return true;
         }
         return false;

@@ -10,17 +10,35 @@ const UFs = () => {
   const [status, setStatus] = useState('');
 
   const criarUF = async () => {
+
+    if (!nome || !sigla|| !status) {
+      alert('Por favor, preencha todos os campos.');
+      return;
+    }
+    if(sigla.length > 2){
+      alert('Sigla invalida tente novamente');
+      return;
+    }
     const iStatus = parseInt(status);
+    
+
     const novoUF = { nome, sigla, status: iStatus };
-    console.log(novoUF);
-    await ConectarBackend.post('/uf', novoUF);
-    navegacao('/');
+    
+    try{
+      await ConectarBackend.post('/uf', novoUF);
+      navegacao('/');
+      alert("Estado incluido com sucesso");
+    }
+    catch(error){
+      alert(error);
+    }
+
   };
 
   return (
     <div className="novo-uf">
       <h2>Inserir novo Estado</h2>
-      <form>
+      <form onSubmit={criarUF}>
         <div className="form-control">
           <label htmlFor="nome">Nome:</label>
           <input type="text" id="nome" placeholder="Digite o nome do Estado" value={nome} onChange={(e) => setNome(e.target.value)} />

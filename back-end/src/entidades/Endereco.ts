@@ -27,6 +27,6 @@ import { Pessoa } from "./Pessoa";
         
         @Column({name: 'CEP', type:'varchar'})
             cep: string;
-        @Column({name: 'Status', type:'number'})
+        @Column({name: 'STATUS', type:'number'})
             status: number;
     }

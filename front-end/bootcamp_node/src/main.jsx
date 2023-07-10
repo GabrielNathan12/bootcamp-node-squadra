@@ -9,6 +9,8 @@ import Bairro from './rotas/Bairro';
 import Municipio from './rotas/Municipio';
 import Endereco from './rotas/Endereco';
 import UFs from './rotas/UFs';
+import Login from './rotas/Login';
+
 
 const routing = (
   <React.StrictMode>
@@ -21,6 +23,7 @@ const routing = (
           <Route path='/uf' element={<UFs />} />
           <Route path='/municipio' element={<Municipio />} />
           <Route path='/endereco' element={<Endereco />} />
+          <Route path='/autenticar' element={<Login />} />
         </Route>
       </Routes>
     </BrowserRouter>

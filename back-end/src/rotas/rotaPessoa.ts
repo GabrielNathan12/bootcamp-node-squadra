@@ -20,7 +20,7 @@ const rotaPessoa = Router();
 const ControladorGeral = new ControladorPessoa(repositorios);
 
 rotaPessoa.get('/pessoa',(requisicao: Request, resposta: Response)=>  ControladorGeral.listarPessoa(requisicao, resposta));
-rotaPessoa.post('/pessoa',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.criarPessoa(requisicao, resposta));
+rotaPessoa.post('/pessoa', eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.criarPessoa(requisicao, resposta));
 rotaPessoa.put('/pessoa',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarPessoa(requisicao, resposta));
 rotaPessoa.delete('/pessoa/:codigoPessoa',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.deletarPessoa(requisicao, resposta));
 

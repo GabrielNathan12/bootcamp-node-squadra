@@ -32,7 +32,7 @@ export class ControladorUF{
         try{
             const {nome, sigla, status} = requisicao.body;
 
-            if(!nome || !sigla || !status){
+            if(nome === undefined || sigla === undefined || status === undefined){
                 return resposta.status(400).json({mensagem: 'Erro ao encontrar dados no Json', status: '400'})
             }
             if(!this.verificaQtdSiglas(sigla)){
@@ -91,7 +91,7 @@ export class ControladorUF{
     }
 
     private verificaStatus(status: number){
-        if(status == 0 || status == 1){
+        if(status === 0 || status === 1){
             return true;
         }
         return false;

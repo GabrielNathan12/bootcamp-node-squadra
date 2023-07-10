@@ -23,11 +23,11 @@ export class CriarBairro {
     if (!municipioExiste) {
       return resposta.status(400).json({ mensagem: "Município não existe", status: "400" });
     }
-    const idMunicipio = municipioExiste.codigoMunicipio;
     
-    const bairroExiste = await repositorioBairro.findOne({where: { nome: nome }});
+    const bairroExiste = await repositorioBairro.createQueryBuilder("Bairro").where("Bairro.nome = :nome", {nome: nome})
+                                                .andWhere("Bairro.codigoMunicipio = :codigoMunicipio", {codigoMunicipio:codigoMunicipio}).getOne();
 
-    if (bairroExiste && idMunicipio) {
+    if (bairroExiste) {
       return resposta.status(400).json({ mensagem: "Bairro já existe", status: "400" });
     }
 
