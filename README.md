@@ -7,6 +7,7 @@
 <p> Esse projeto é uma API focada principalmente no BACK-END, com o intuido de fazer o cadastramento, alteração, e deleção de Estados, muncípios, bairros e pessoas, respeitando o relacionamente entre eles, os dados então sendo gravados no Banco de dados da Oracle.
  </p>
 <p> Ele usa o Freameword NodeJS, com typescript, o FRONT-END usa o Freamework do React-vite com JavaScript,mas ainda o FRONT-END não fui conluído falta as requisições de cadastro, alteração, e deleção, mas no BACK-END com o insominar pode testar normalmente as requisições</p>
+<p>Script do database foi gerado automaticamente pelo DBeaver,e o back-end acredito esta completo</p>
 
 ### Tecnológias Usadas
 ![react (3)](https://github.com/GabrielNathan12/bootcamp-node-squadra/assets/76185909/855fcce6-d34b-42b3-8368-eec35337b791)
