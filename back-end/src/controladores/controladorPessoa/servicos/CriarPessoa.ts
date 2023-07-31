@@ -22,6 +22,12 @@ export class CriarPessoa{
         const loginPessoa = await pessoaRepositorio.findOne({where: {login:login}});
         const criptografar = await hash(senha, 8);
         
+        const emailExiste = this.repositorios.pessoaRepositorio.findOne({where: {login:login}});
+
+        if(emailExiste !== null){
+            return resposta.status(400).json({mensagem: "Email ja cadastrado", status: 400});
+        }
+
         if(!loginPessoa){
             const novaPessoa = pessoaRepositorio.create({
                 nome:nome, sobrenome:sobrenome, idade:idade,login: login, senha:criptografar, status: status
