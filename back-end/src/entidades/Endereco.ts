@@ -4,15 +4,16 @@ import { Pessoa } from "./Pessoa";
 
 
 @Entity('TB_ENDERECO')
+
     export class Endereco{
         @PrimaryGeneratedColumn({name:'CODIGO_ENDERECO', type:'int'})
             codigoEndereco: number;
         
-        @ManyToOne(()=> Pessoa, (pessoa) => pessoa.enderecos)
+        @ManyToOne(()=> Pessoa, (pessoa) => pessoa.enderecos,{onDelete:"CASCADE"})
         @JoinColumn({name: 'CODIGO_PESSOA'})
             codigoPessoa: Pessoa;
         
-        @ManyToOne(() => Bairro, (bairro) => bairro.enderecos)
+        @ManyToOne(() => Bairro, (bairro) => bairro.enderecos,{onDelete:"CASCADE"})
         @JoinColumn({name: 'CODIGO_BAIRRO'})
             codigoBairro: Bairro;
         
@@ -30,3 +31,4 @@ import { Pessoa } from "./Pessoa";
         @Column({name: 'STATUS', type:'number'})
             status: number;
     }
+

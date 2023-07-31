@@ -4,12 +4,11 @@ import {UF} from './UF';
 import { Bairro } from "./Bairro";
 
 @Entity('TB_MUNICIPIO')
-
     export class Municipio{
         @PrimaryGeneratedColumn({name: 'CODIGO_MUNICIPIO', type:'int'})
             codigoMunicipio: number;
         
-        @ManyToOne(() => UF, (codigoUF) => codigoUF.municipios)
+        @ManyToOne(() => UF, (codigoUF) => codigoUF.municipios,{onDelete:"CASCADE"})
         @JoinColumn({name: 'Codigo_UF'})
             codigoUF: UF;
         @Column({name: 'NOME', type:'varchar'})
@@ -20,3 +19,4 @@ import { Bairro } from "./Bairro";
             bairros: Bairro[];
 
     }
+

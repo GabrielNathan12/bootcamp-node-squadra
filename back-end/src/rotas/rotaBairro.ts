@@ -22,6 +22,6 @@ const ControladorGeral = new ControladorBairro(repositorios);
 rotaBairro.get('/bairro',(requisicao: Request, resposta: Response)=> ControladorGeral.listarBairro(requisicao, resposta));
 rotaBairro.post('/bairro',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.criarBairro(requisicao, resposta));
 rotaBairro.put('/bairro',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarBairro(requisicao, resposta));
-rotaBairro.delete('/bairro/:codigoBairro',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.deletarBairro(requisicao, resposta));
+rotaBairro.delete('/bairro/:codigoBairro',(requisicao: Request, resposta: Response)=> ControladorGeral.deletarBairro(requisicao, resposta));
 
 export default rotaBairro;
