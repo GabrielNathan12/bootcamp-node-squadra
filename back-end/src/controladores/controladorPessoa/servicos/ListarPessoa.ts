@@ -46,13 +46,19 @@ export class ListarPessoa{
             if(idade){
                 filtarPessoa.idade = Number(idade);
             }
-            if(status){
-                filtarPessoa.status = Number(status);
-            }
+            if(status !== undefined) {
+                const statusNumero = Number(status);
 
+                if(statusNumero === 0 || statusNumero === 1){
+                    filtarPessoa.status = Number(status);
+                }
+
+            }
+            
             const pessoaFiltrada = await this.repositorios.pessoaRepositorio.find({where: filtarPessoa});
             return resposta.status(200).json(pessoaFiltrada);
-        }catch(error){
+        }
+        catch(error){
             return resposta.status(400).json({ mensagem: 'Erro ao filtrar as pessoas', status: '400'+ error });
         }
     }

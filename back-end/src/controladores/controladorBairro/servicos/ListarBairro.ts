@@ -35,8 +35,12 @@ export class ListarBairro{
             if(nome){
                 filtarBairros.nome = nome;
             }
-            if(status){
-                filtarBairros.status = Number(status);
+            if(status !== undefined) {
+                const statusNumero = Number(status);
+
+                if(statusNumero === 0 || statusNumero === 1){
+                    filtarBairros.status = Number(status);
+                }
             }
 
             const bairrosFiltrados = await this.repositorios.bairroRepositorio.find({where:filtarBairros});
