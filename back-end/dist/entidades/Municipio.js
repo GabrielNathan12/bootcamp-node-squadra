@@ -20,7 +20,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Municipio.prototype, "codigoMunicipio", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => UF_1.UF, (codigoUF) => codigoUF.municipios),
+    (0, typeorm_1.ManyToOne)(() => UF_1.UF, (codigoUF) => codigoUF.municipios, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: 'Codigo_UF' }),
     __metadata("design:type", UF_1.UF)
 ], Municipio.prototype, "codigoUF", void 0);

@@ -40,8 +40,11 @@ class ListaEndereco {
             if (cep) {
                 filtarEnderecos.cep = cep;
             }
-            if (status) {
-                filtarEnderecos.status = Number(status);
+            if (status !== undefined) {
+                const statusNumero = Number(status);
+                if (statusNumero === 0 || statusNumero === 1) {
+                    filtarEnderecos.status = Number(status);
+                }
             }
             const enderecoFiltrado = await this.repositorios.enderecoRepositorio.find({ where: filtarEnderecos });
             return resposta.status(200).json(enderecoFiltrado);

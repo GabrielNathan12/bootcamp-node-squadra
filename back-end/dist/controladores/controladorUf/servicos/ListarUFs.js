@@ -27,8 +27,11 @@ class ListarUFs {
             if (sigla) {
                 filtarDados.sigla = sigla;
             }
-            if (status) {
-                filtarDados.status = Number(status);
+            if (status !== undefined) {
+                const statusNumero = Number(status);
+                if (statusNumero === 0 || statusNumero === 1) {
+                    filtarDados.status = Number(status);
+                }
             }
             const ufsFiltrados = await this.repositorioUf.ufRepositorio.find({ where: filtarDados });
             return resposta.status(200).json(ufsFiltrados);

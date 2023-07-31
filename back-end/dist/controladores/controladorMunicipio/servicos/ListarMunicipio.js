@@ -24,8 +24,11 @@ class ListarMunicipio {
             if (nome) {
                 filtrarMunicipio.nome = nome;
             }
-            if (status) {
-                filtrarMunicipio.status = Number(status);
+            if (status !== undefined) {
+                const statusNumero = Number(status);
+                if (statusNumero === 0 || statusNumero === 1) {
+                    filtrarMunicipio.status = Number(status);
+                }
             }
             const municipiosFiltrados = await this.repositorioMunicipio.municipioRepositorio.find({ where: filtrarMunicipio });
             return resposta.status(200).json(municipiosFiltrados);

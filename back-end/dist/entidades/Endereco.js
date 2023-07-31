@@ -20,12 +20,12 @@ __decorate([
     __metadata("design:type", Number)
 ], Endereco.prototype, "codigoEndereco", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Pessoa_1.Pessoa, (pessoa) => pessoa.enderecos),
+    (0, typeorm_1.ManyToOne)(() => Pessoa_1.Pessoa, (pessoa) => pessoa.enderecos, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: 'CODIGO_PESSOA' }),
     __metadata("design:type", Pessoa_1.Pessoa)
 ], Endereco.prototype, "codigoPessoa", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Bairro_1.Bairro, (bairro) => bairro.enderecos),
+    (0, typeorm_1.ManyToOne)(() => Bairro_1.Bairro, (bairro) => bairro.enderecos, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: 'CODIGO_BAIRRO' }),
     __metadata("design:type", Bairro_1.Bairro)
 ], Endereco.prototype, "codigoBairro", void 0);
