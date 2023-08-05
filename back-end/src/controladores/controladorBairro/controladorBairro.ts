@@ -16,20 +16,9 @@ export class ControladorBairro{
         try{
             const {codigoMunicipio, nome, status} = requisicao.body;
             const criarNovoBairro = new CriarBairro(this.repositorios);
+
+            await criarNovoBairro.criarBairro({codigoMunicipio, nome, status}, requisicao, resposta);
             
-            if(codigoMunicipio === undefined || nome === undefined || status === undefined){
-                return resposta.send(400).json({mensagem: 'Erro ao encontrar os campus no Json', status: '400'});
-            }
-            if(!Number(status)){
-                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
-            }
-            if(!this.verificaStatus(Number(status))){
-                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
-            }
-
-            const novoBairro = await criarNovoBairro.criarBairro({codigoMunicipio, nome, status}, requisicao, resposta);
-            return novoBairro;
-
         }catch(error){
             return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
@@ -39,8 +28,8 @@ export class ControladorBairro{
     public async listarBairro(requisicao: Request, resposta: Response){
         try{    
             const listarBairro = new ListarBairro(this.repositorios);
-            const bairro = await listarBairro.listarBairro(requisicao, resposta);
-            return bairro;
+            await listarBairro.listarBairro(requisicao, resposta);
+            
         }catch(erro){
             return resposta.status(500).json({mensagem: 'Erro interno no servidor', status:'500'});
         }

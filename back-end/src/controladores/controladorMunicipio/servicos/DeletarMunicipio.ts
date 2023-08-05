@@ -18,7 +18,21 @@ export class DeletarMunicipio{
         if(!municipioExiste){
             return resposta.status(400).json({mensagem: 'Municipio nao existe', status: '400'});
         }
+        
         await municipioRepositorio.remove(municipioExiste);
-        return resposta.status(200).json(await municipioRepositorio.find({}));
+
+        const municipios = await municipioRepositorio.find({
+            select: ["codigoMunicipio", "nome", "status", "codigoUF"],
+            relations: ["codigoUF"]
+        });
+
+        const todosOsMunicipios = municipios.map((municipio) => ({
+            codigoMunicipio: municipio.codigoMunicipio,
+            codigoUF: municipio.codigoUF.codigoUF,
+            nome: municipio.nome,
+            status: municipio.status
+        }));
+
+        return resposta.status(200).json(todosOsMunicipios);
     }
 }

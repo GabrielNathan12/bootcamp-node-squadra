@@ -28,23 +28,14 @@ export class ControladorMunicipio{
         try{
             const {codigoUF, nome, status} = requisicao.body;
             const criarNovoMunicipio = new CriarMunicipio(this.repositorio);
-            
-            if(codigoUF  === undefined || nome === undefined || status === undefined){
-                return resposta.status(400).json({mensagem: 'Erro ao encontrar dados no Json', status: '400'});
-            }
-            if(!Number(status)){
-                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
-            }
-            if(!this.verificaStatus(Number(status))){
-                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
-            }    
-            const novoMuncipio = await criarNovoMunicipio.criarNovoMunicipio({codigoUF, nome, status}, requisicao, resposta);
-            return novoMuncipio;
+            await criarNovoMunicipio.criarNovoMunicipio({codigoUF, nome, status}, requisicao, resposta);
 
         }catch(error){
-            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
+            return resposta.status(400).json({mensagem: "Erro interno no servidor" + error})
         }
+        
     }
+    
     public async atualizarMunicipio(requisicao: Request, resposta: Response){
         try{
             const {codigoMunicipio, nome, status} = requisicao.body;

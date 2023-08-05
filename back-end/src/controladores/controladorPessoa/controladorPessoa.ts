@@ -14,24 +14,14 @@ export class ControladorPessoa {
 
    public async criarPessoa(requisicao:Request, resposta: Response){
         try{
-            
             const {nome, sobrenome, idade, login , senha, status} = requisicao.body;
+            
             const criarNovaPessoa = new CriarPessoa(this.repositorios);
 
-            if(nome === undefined || sobrenome === undefined || idade === undefined || login === undefined || senha === undefined || status === undefined){
-                return resposta.status(400).json({mensagem: 'Erro ao encontrar dados no Json', status:'400'})
-            }
-            if(!this.verificarStatus(Number(status))){
-                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
-            }
-            if(!Number(status)){
-                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
-            }
-            const novaPessoa = await criarNovaPessoa.criarPessoa({nome, sobrenome, idade, login , senha, status}, requisicao, resposta);
-            
-            return novaPessoa;
+            await criarNovaPessoa.criarPessoa({nome, sobrenome, idade, login , senha, status}, requisicao, resposta);
 
-        }catch(error){
+        }
+        catch(error){
             return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
    }
@@ -74,7 +64,8 @@ export class ControladorPessoa {
         const pessoa = atualizar.atualizarPessoa({codigoPessoa, nome, sobrenome, idade, login, senha, status}, requisicao, resposta);
         return pessoa;
         
-    }catch(error){
+    }
+    catch(error){
         return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
     }
    }

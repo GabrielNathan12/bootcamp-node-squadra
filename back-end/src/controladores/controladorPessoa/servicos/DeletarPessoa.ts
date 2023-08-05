@@ -18,7 +18,31 @@ export class DeletarPessoa{
             return resposta.status(400).json({mensagem:'Pessoa nao encontrada', status:'400'});
         }
         await pessoaRepositorio.remove(pessoa);
+        
+        const pessoas = await pessoaRepositorio.find({
+            select: ["codigoPessoa", "nome", "sobrenome", "idade", "login", "senha","status" , "enderecos"],
+            relations: ["enderecos"]
+        });
 
-        return resposta.status(200).json(await pessoaRepositorio.find({}));
+        const todasAsPessoas = pessoas.map((pessoa) =>({
+            codigoPessoa: pessoa.codigoPessoa,
+            nome: pessoa.nome,
+            sobrenome: pessoa.sobrenome,
+            idade: pessoa.idade,
+            login: pessoa.login,
+            senha: pessoa.senha,
+            status: pessoa.status,
+
+            enderecos: pessoa.enderecos.map((endereco)=>({
+                codigoEndereco: endereco.codigoEndereco,
+                nomeRua: endereco.nomeRua,
+                numero: endereco.numero,
+                complemento: endereco.complemento,
+                cep: endereco.cep,
+                status: endereco.status
+            }))
+        }));
+
+        return resposta.status(200).json(todasAsPessoas);
     }
 }

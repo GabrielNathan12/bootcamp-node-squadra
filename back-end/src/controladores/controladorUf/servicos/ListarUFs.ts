@@ -14,7 +14,7 @@ export class ListarUFs{
     }
     
     public async listarUf( requisicao: Request, resposta: Response){
-        const ufRepositorio =  this.repositorioUf.ufRepositorio;
+        const repositorioUF =  this.repositorioUf.ufRepositorio;
         const {codigoUF ,nome, sigla, status} = requisicao.query;
 
         if(codigoUF || nome || sigla || status){
@@ -28,7 +28,7 @@ export class ListarUFs{
         }
 
         else{
-            return resposta.status(200).json(await ufRepositorio.find({}));
+            return resposta.status(200).json(await repositorioUF.find({}));
         }
     }
 
@@ -65,7 +65,7 @@ export class ListarUFs{
 
         }
         catch (error) {
-            return resposta.status(400).json({ mensagem: 'Erro ao filtrar UFs', status: '400'+ error });
+            return resposta.status(400).json({ mensagem: 'Erro ao filtrar UFs', status: 400 , error });
         }
     }
 }

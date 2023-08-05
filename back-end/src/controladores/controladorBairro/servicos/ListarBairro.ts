@@ -15,13 +15,13 @@ export class ListarBairro{
     }
 
     public async listarBairro(requisicao: Request, resposta: Response){
-        const repositorio = this.repositorios.bairroRepositorio;
+        const repositorioBairro = this.repositorios.bairroRepositorio;
         const {codigoBairro,codigoMunicipio ,nome, status} = requisicao.query;
 
         if(codigoBairro || codigoMunicipio ||nome || status){
             if(!Number(status) || (Number(status) !== 1 && Number(status) !== 2)){
                 if(status !== undefined){
-                    return resposta.status(400).json({ mensagem: `Status invalido na busca, valor = ${status}`, status: '400'});
+                    return resposta.status(400).json({ mensagem: `Status invalido na busca, valor = ${status}`, status: 400});
                 }
             }
             this.listaFiltrada({codigoBairro: Number(codigoBairro),codigoMunicipio:Number(codigoMunicipio), 
@@ -29,7 +29,7 @@ export class ListarBairro{
         }
         else{
             try{
-                const bairros = await repositorio.find({
+                const bairros = await repositorioBairro.find({
                     select:["codigoBairro", "codigoMunicipio", "nome", "status"], 
                     relations:["codigoMunicipio"]
                 });

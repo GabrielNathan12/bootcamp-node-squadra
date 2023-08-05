@@ -32,19 +32,6 @@ export class ControladorUF{
         try{
             const {nome, sigla, status} = requisicao.body;
 
-            if(nome === undefined || sigla === undefined || status === undefined){
-                return resposta.status(400).json({mensagem: 'Erro ao encontrar dados, falta campus no Json', status: 400})
-            }
-            if(!this.verificaQtdSiglas(sigla)){
-                return resposta.status(400).json({mensagem: 'Sigla invalida', status: 400});
-            }
-            if(!Number(status)){
-                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
-            }
-            if(!this.verificaStatus(Number(status))){
-                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: 400});
-            }
-
             const criarUF = new CriarUF(this.repositorios);
             const uf = await criarUF.criarNovoUF({nome,sigla, status}, requisicao, resposta);
         
@@ -59,7 +46,7 @@ export class ControladorUF{
             const {codigoUF ,nome, sigla, status} = requisicao.body;
             const atualizarUF = new AtualizarUF(this.repositorios);
             
-            if(!this.verificaQtdSiglas(sigla)){
+            /*if(!this.verificaQtdSiglas(sigla)){
                 return resposta.status(400).json({mensagem: 'Sigla invalida', status: '400'});
             }
             if(!Number(status)){
@@ -67,7 +54,7 @@ export class ControladorUF{
             }
             if(!this.verificaStatus(Number(status))){
                 return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
-            }
+            } */
             const uf = await atualizarUF.atualizarUf({codigoUF, nome, sigla, status}, requisicao, resposta);
             
             return uf;
@@ -86,20 +73,6 @@ export class ControladorUF{
         }catch(error){
             return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
-    }
-
-    private verificaQtdSiglas(sigla: String){
-        if(sigla.length === 2){
-            return true;
-        }
-        return false;
-    }
-
-    private verificaStatus(status: number){
-        if(status === 1 || status === 2){
-            return true;
-        }
-        return false;
     }
 
 }

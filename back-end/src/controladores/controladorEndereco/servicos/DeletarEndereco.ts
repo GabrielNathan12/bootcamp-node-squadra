@@ -19,7 +19,23 @@ export class DeletarEndereco{
         }
 
         await enderecoReposito.remove(enderecoExiste);
-        return resposta.status(200).json(await enderecoReposito.find({}));
+        const enderecos = await enderecoReposito.find({
+            select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep", "status"],
+            relations:["codigoPessoa", "codigoBairro"]
+        });
+
+        const todosEnderecos = enderecos.map((endereco)=>({
+            codigoEndereco: endereco.codigoEndereco,
+            codigoPessoa: endereco.codigoPessoa.codigoPessoa,
+            codigoBairro: endereco.codigoBairro.codigoBairro,
+            nomeRua: endereco.nomeRua,
+            numero: endereco.numero,
+            complemento: endereco.complemento,
+            cep: endereco.cep,
+            status: endereco.status
+        }));
+
+        return resposta.status(200).json(todosEnderecos);
         
     }
 }
