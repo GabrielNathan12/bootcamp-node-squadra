@@ -2,7 +2,8 @@
     import { IRepositorios } from "../../../Irepositorios/Irepositorios";
 
     interface IListaFiltrada{
-        codigoMunicipio?:number, 
+        codigoMunicipio?:number,
+        codigoUF?:number,
         nome?:string,
         status?:number,
     }
@@ -16,17 +17,40 @@
         public async listarMunicipio(requisicao: Request, resposta: Response){
             const municipioRepositorio = this.repositorioMunicipio.municipioRepositorio;
             
-            const {codigoMunicipio, nome, status} = requisicao.query;
+            const {codigoMunicipio, codigoUF ,nome, status} = requisicao.query;
 
-            if(codigoMunicipio || nome|| status){
-                this.listFiltrada({codigoMunicipio: Number(codigoMunicipio), nome: nome as string, status: Number(status)}, requisicao, resposta);
-            }else{
-                return resposta.status(200).json(await municipioRepositorio.find({relations:{bairros:true}}));
+            if(codigoMunicipio || nome|| status || codigoUF) {
+                if(!Number(status) || (Number(status) !== 1 && Number(status) !== 2)){
+                    if(status !== undefined){
+                        return resposta.status(400).json({ mensagem: `Status invalido na busca, valor = ${status}`, status: '400'});
+                    }
+                }
+                this.listFiltrada({
+                        codigoMunicipio: Number(codigoMunicipio),codigoUF:Number(codigoUF),
+                        nome: nome as string, status: Number(status)}, requisicao, resposta);
             }
-            
+            else {
+                try{
+                    const municipios = await municipioRepositorio.find({
+                        select: ["codigoMunicipio", "nome", "status", "codigoUF"],
+                        relations: ["codigoUF"]
+                    });
+    
+                    const todosOsMunicipios = municipios.map((municipio) => ({
+                        codigoMunicipio: municipio.codigoMunicipio,
+                        codigoUF: municipio.codigoUF.codigoUF,
+                        nome: municipio.nome,
+                        status: municipio.status
+                    }));
+    
+                    return resposta.status(200).json(todosOsMunicipios);
+                }catch(error){
+                    return resposta.status(400).json({mensagem: "Erro ao listar os municipios", error})
+                }
+            }
         }
 
-        private async listFiltrada({codigoMunicipio, nome, status}: IListaFiltrada, requisicao:Request, resposta: Response){
+        private async listFiltrada({codigoMunicipio,codigoUF ,nome, status}: IListaFiltrada, requisicao:Request, resposta: Response){
             try{
                 let filtrarMunicipio: any = {};
 
@@ -36,20 +60,37 @@
                 if(nome){
                     filtrarMunicipio.nome = nome;
                 }
+                if(codigoUF){
+                    filtrarMunicipio.codigoUF = codigoUF;
+                }
+
                 if(status !== undefined) {
                     const statusNumero = Number(status);
     
-                    if(statusNumero === 0 || statusNumero === 1){
+                    if(statusNumero === 1 || statusNumero === 2){
                         filtrarMunicipio.status = Number(status);
                     }
                 }
-
-                const municipiosFiltrados = await this.repositorioMunicipio.municipioRepositorio.find({where: filtrarMunicipio});
                 
-                return resposta.status(200).json(municipiosFiltrados);
+                const municipiosFiltrados = await this.repositorioMunicipio.municipioRepositorio.find(
+                    {
+                        where: filtrarMunicipio,
+                        select: ["codigoMunicipio", "nome", "status", "codigoUF"],
+                        relations: ["codigoUF"]
+                    });
+
+                
+                const todosOsMunicipios = municipiosFiltrados.map((municipio) => ({
+                        codigoMunicipio: municipio.codigoMunicipio,
+                        codigoUF: municipio.codigoUF.codigoUF,
+                        nome: municipio.nome,
+                        status: municipio.status
+                }));
+    
+                    return resposta.status(200).json(todosOsMunicipios);
             }
             catch(error){
-                resposta.status(400).json({mensagem: 'Erro ao filtrar os municipios', status: '400' + error})
+                resposta.status(400).json({mensagem: 'Erro ao filtrar os municipios', status: 400, error})
             }
         }
     }

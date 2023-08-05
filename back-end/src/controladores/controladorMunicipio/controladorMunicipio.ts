@@ -18,6 +18,7 @@ export class ControladorMunicipio{
             const listarMunicipio = new ListarMunicipio(this.repositorio);
             const municipio = await listarMunicipio.listarMunicipio(requisicao, resposta);
             return municipio;
+            
         }catch(error){
             return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
         }
@@ -30,6 +31,9 @@ export class ControladorMunicipio{
             
             if(codigoUF  === undefined || nome === undefined || status === undefined){
                 return resposta.status(400).json({mensagem: 'Erro ao encontrar dados no Json', status: '400'});
+            }
+            if(!Number(status)){
+                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
             }
             if(!this.verificaStatus(Number(status))){
                 return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
@@ -46,9 +50,7 @@ export class ControladorMunicipio{
             const {codigoMunicipio, nome, status} = requisicao.body;
             const atualizar = new AtualizarMunicipio(this.repositorio);
             
-            if(!codigoMunicipio || !nome || !status){
-                return resposta.status(400).json({mensagem: 'Erro ao encontrar dados no Json', status: '400'});
-            }
+
             if(!this.verificaStatus(Number(status))){
                 return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
             }
@@ -73,7 +75,7 @@ export class ControladorMunicipio{
         
     }
     private verificaStatus(status: number){
-        if(status == 0 || status == 1){
+        if(status === 1 || status === 2){
             return true;
         }
         return false;

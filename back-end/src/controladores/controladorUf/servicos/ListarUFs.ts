@@ -18,7 +18,12 @@ export class ListarUFs{
         const {codigoUF ,nome, sigla, status} = requisicao.query;
 
         if(codigoUF || nome || sigla || status){
-
+            if(!Number(status) || (Number(status) !== 1 && Number(status) !== 2)){
+                if(status !== undefined){
+                    return resposta.status(400).json({ mensagem: `Status invalido na busca, valor = ${status}`, status: '400'});
+                }
+                    
+            }
             this.listaFiltrada({ codigoUF: Number(codigoUF), nome: nome as string, sigla: sigla as string, status: Number(status) },requisicao,resposta);
         }
 
@@ -45,14 +50,16 @@ export class ListarUFs{
             }
 
             if(status !== undefined) {
+
                 const statusNumero = Number(status);
 
-                if(statusNumero === 0 || statusNumero === 1){
+                if(statusNumero === 1 || statusNumero === 2){
                     filtarDados.status = Number(status);
                 }
+               
             }
             
-            const ufsFiltrados = await this.repositorioUf.ufRepositorio.find({ where: filtarDados });
+            const ufsFiltrados = await this.repositorioUf.ufRepositorio.find({ where: filtarDados});
             
             return resposta.status(200).json(ufsFiltrados);
 

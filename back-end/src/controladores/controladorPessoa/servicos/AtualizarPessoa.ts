@@ -23,11 +23,11 @@ export class AtualizarPessoa{
         const pessoa = await pessoaRepositorio.findOne({where: {codigoPessoa:codigoPessoa}});
         const loginPessoa = await pessoaRepositorio.findOne({where: {login:login}});
 
-        if(loginPessoa && login !== pessoa?.login){
-            return resposta.status(400).json({mensagem: 'Email ja usado na aplicacao', status: '400'})
-        }
         if(!pessoa){
             return resposta.status(400).json({mensagem: 'Codigo pessoa nao encontrado', status:'400'});
+        }
+        if(loginPessoa && login !== pessoa?.login){
+            return resposta.status(400).json({mensagem: 'Email ja usado na aplicacao', status: '400'})
         }
         pessoa.nome = nome;
         pessoa.sobrenome = sobrenome;

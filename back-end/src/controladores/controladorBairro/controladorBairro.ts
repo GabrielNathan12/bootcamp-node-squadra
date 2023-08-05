@@ -20,7 +20,9 @@ export class ControladorBairro{
             if(codigoMunicipio === undefined || nome === undefined || status === undefined){
                 return resposta.send(400).json({mensagem: 'Erro ao encontrar os campus no Json', status: '400'});
             }
-
+            if(!Number(status)){
+                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
+            }
             if(!this.verificaStatus(Number(status))){
                 return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
             }
@@ -53,7 +55,9 @@ export class ControladorBairro{
             if(!this.verificaStatus(Number(status))){
                 return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
             }
-
+            if(!Number(status)){
+                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
+            }
             const bairro = await atualizar.atualizarBairro({codigoBairro, nome, status}, requisicao, resposta);
             return bairro;
 
@@ -74,7 +78,7 @@ export class ControladorBairro{
     }
 
     private verificaStatus(status: number){
-        if(status == 0 || status == 1){
+        if(status === 1 || status === 2){
             return true;
         }
         return false;

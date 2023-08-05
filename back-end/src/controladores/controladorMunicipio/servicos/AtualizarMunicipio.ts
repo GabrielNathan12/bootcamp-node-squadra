@@ -25,7 +25,9 @@ export class AtualizarMunicipio{
         if(municipioNome && nome !== municipio.nome){
             return resposta.status(400).json({mensagem: 'Nome do municio ja existe', status: '400'});
         }
-
+        if(!Number(status)){
+            return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
+        }
         municipio.nome = nome;
         municipio.status = status;
         

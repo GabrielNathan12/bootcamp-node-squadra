@@ -24,6 +24,9 @@ export class ControladorPessoa {
             if(!this.verificarStatus(Number(status))){
                 return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
             }
+            if(!Number(status)){
+                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
+            }
             const novaPessoa = await criarNovaPessoa.criarPessoa({nome, sobrenome, idade, login , senha, status}, requisicao, resposta);
             
             return novaPessoa;
@@ -61,6 +64,9 @@ export class ControladorPessoa {
         if(!codigoPessoa || !nome || !sobrenome || !idade || !login || !senha || !status){
             return resposta.status(400).json({mensagem: 'Erro ao encontrar dados do Json', status: '400'});
         }
+        if(!Number(status)){
+            return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
+        }
         if(!this.verificarStatus(Number(status))){
             return resposta.status(400).json({mensagem: 'Status invalido', status: '400'});
         }
@@ -73,7 +79,7 @@ export class ControladorPessoa {
     }
    }
    private verificarStatus(status: number){
-        if(status === 0 || status === 1){
+        if(status === 1 || status === 2){
             return true;
         }
         return false;

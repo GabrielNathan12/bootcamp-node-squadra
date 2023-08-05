@@ -33,14 +33,16 @@ export class ControladorUF{
             const {nome, sigla, status} = requisicao.body;
 
             if(nome === undefined || sigla === undefined || status === undefined){
-                return resposta.status(400).json({mensagem: 'Erro ao encontrar dados no Json', status: '400'})
+                return resposta.status(400).json({mensagem: 'Erro ao encontrar dados, falta campus no Json', status: 400})
             }
             if(!this.verificaQtdSiglas(sigla)){
-                return resposta.status(400).json({mensagem: 'Sigla invalida', status: '400'});
+                return resposta.status(400).json({mensagem: 'Sigla invalida', status: 400});
             }
-            
+            if(!Number(status)){
+                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
+            }
             if(!this.verificaStatus(Number(status))){
-                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
+                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: 400});
             }
 
             const criarUF = new CriarUF(this.repositorios);
@@ -59,6 +61,9 @@ export class ControladorUF{
             
             if(!this.verificaQtdSiglas(sigla)){
                 return resposta.status(400).json({mensagem: 'Sigla invalida', status: '400'});
+            }
+            if(!Number(status)){
+                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
             }
             if(!this.verificaStatus(Number(status))){
                 return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
@@ -91,7 +96,7 @@ export class ControladorUF{
     }
 
     private verificaStatus(status: number){
-        if(status === 0 || status === 1){
+        if(status === 1 || status === 2){
             return true;
         }
         return false;

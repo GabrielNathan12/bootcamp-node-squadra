@@ -29,6 +29,9 @@ export class ControladorEndereco{
             if(codigoPessoa === undefined || codigoBairro === undefined || nomeRua === undefined || numero === undefined || complemento === undefined || cep === undefined|| status === undefined){
                 return resposta.status(400).json({mensagem: 'Erro ao ler os dados no Json, falta campos', status: '400'});
             }
+            if(!Number(status)){
+                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
+            }
             if(!this.verificarStatus(Number(status))){
                 return resposta.status(400).json({mensagem: 'Status invalido', status: '400'});
             }
@@ -70,7 +73,7 @@ export class ControladorEndereco{
     }
 
     private verificarStatus(status: Number){
-        if(status == 0 || status == 1){
+        if(status === 1 || status === 2){
             return true;
         }
         return false;
