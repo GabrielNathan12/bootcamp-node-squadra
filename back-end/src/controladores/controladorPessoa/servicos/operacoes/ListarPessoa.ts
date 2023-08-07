@@ -39,7 +39,7 @@ export class ListarPessoa extends Servicos{
                     relations: ["enderecos"]
                 });
 
-                const todasAsPessoas = this.listarTodasPessoas(pessoas);
+                const todasAsPessoas = await this.listarTodosOsDados();
 
                 return resposta.status(200).json(todasAsPessoas);
 

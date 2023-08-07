@@ -1,37 +1,31 @@
 import { Request, Response } from "express";
-import { IRepositorios } from "../../../Irepositorios/Irepositorios";
+import { IRepositorios } from "../../../../Irepositorios/Irepositorios";
+import { Servicos } from "../Servicos";
 
-interface IListaFiltrada{
+interface IEndereco{
     codigoEndereco?: number,
     codigoPessoa?: number,
     codigoBairro?: number,
     nomeRua?: string, 
     numero?: number, 
     complemento?: string, 
-    cep?: string, 
-    status?: number
+    cep?: string
 }
-export class ListaEndereco{
-    private repositorios: IRepositorios;
+export class ListaEndereco extends Servicos{
 
     constructor(repositorio: IRepositorios) {
-        this.repositorios = repositorio;
+        super(repositorio);
     }
     
     public async litaEndereco(requisicao: Request, resposta:Response){
-        const enderecoReposito = this.repositorios.enderecoRepositorio;
-        const {codigoEndereco,codigoPessoa, codigoBairro ,nomeRua, numero, complemento, cep, status} = requisicao.query;
+        const enderecoReposito = this.obterRepositorioEndereco();
+        const {codigoEndereco,codigoPessoa, codigoBairro ,nomeRua, numero, complemento, cep} = requisicao.query;
 
-        if(codigoEndereco || codigoPessoa || codigoBairro || nomeRua || numero || complemento || cep || status){
-            if(!Number(status) || (Number(status) !== 1 && Number(status) !== 2)){
-                if(status !== undefined){
-                    return resposta.status(400).json({ mensagem: `Status invalido na busca, valor = ${status}`, status: '400'});
-                }
-            }
+        if(codigoEndereco || codigoPessoa || codigoBairro || nomeRua || numero || complemento || cep){
             this.listaFiltrada({
                 codigoEndereco:Number(codigoEndereco), codigoPessoa:Number(codigoPessoa), 
                 codigoBairro:Number(codigoBairro),nomeRua: nomeRua as string, numero:Number(numero), complemento: complemento as string,
-                cep: cep as string, status: Number(status)}, requisicao, resposta);
+                cep: cep as string}, requisicao, resposta);
         }
         else{
             try{
@@ -40,15 +34,7 @@ export class ListaEndereco{
                     relations:["codigoPessoa", "codigoBairro"]
                 });
 
-                const todosEnderecos = enderecos.map((endereco)=>({
-                    codigoEndereco: endereco.codigoEndereco,
-                    codigoPessoa: endereco.codigoPessoa.codigoPessoa,
-                    codigoBairro: endereco.codigoBairro.codigoBairro,
-                    nomeRua: endereco.nomeRua,
-                    numero: endereco.numero,
-                    complemento: endereco.complemento,
-                    cep: endereco.cep,
-                }));
+                const todosEnderecos = this.listarTodosEnderecos(enderecos);
 
                 return resposta.status(200).json(todosEnderecos);
 
@@ -59,11 +45,8 @@ export class ListaEndereco{
         }
     }
 
-    private async listaFiltrada({
-        codigoEndereco, codigoPessoa, 
-        codigoBairro,nomeRua, numero, complemento,
-        cep, status}: IListaFiltrada, requisicao: Request, resposta: Response){
-        
+    private async listaFiltrada({ codigoEndereco, codigoPessoa, codigoBairro,nomeRua, numero, complemento, cep}: IEndereco,
+                                requisicao: Request, resposta: Response){
         try{
             let filtarEnderecos: any = {};
             
@@ -88,28 +71,13 @@ export class ListaEndereco{
             if(cep){
                 filtarEnderecos.cep = cep as string;
             }
-            if(status !== undefined) {
-                const statusNumero = Number(status);
-
-                if(statusNumero === 1 || statusNumero === 2){
-                    filtarEnderecos.status = Number(status);
-                }
-            }
-            const enderecos = await this.repositorios.enderecoRepositorio.find({
+            const enderecos = await this.obterRepositorioEndereco().find({
                 where: filtarEnderecos,
                 select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep"],
                 relations:["codigoPessoa", "codigoBairro"]
             });
 
-            const todosEnderecos = enderecos.map((endereco)=>({
-                codigoEndereco: endereco.codigoEndereco,
-                codigoPessoa: endereco.codigoPessoa.codigoPessoa,
-                codigoBairro: endereco.codigoBairro.codigoBairro,
-                nomeRua: endereco.nomeRua,
-                numero: endereco.numero,
-                complemento: endereco.complemento,
-                cep: endereco.cep,
-            }));
+            const todosEnderecos = this.listarTodosEnderecos(enderecos);
 
             return resposta.status(200).json(todosEnderecos);
 

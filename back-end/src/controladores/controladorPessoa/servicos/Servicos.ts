@@ -18,7 +18,6 @@ interface IEndereco {
     numero: number;
     complemento: string;
     cep: string;
-    status: number;
     codigoPessoa?: { codigoPessoa: number };
 }
 
@@ -51,13 +50,9 @@ export class Servicos{
         if(!status || isNaN(status) || !this.verificaStatusValido(Number(status))) {
             throw new ErrosDaAplicacao(`Status do campo invalido, valor do status: ${status}`,400);
         }
-        const emailExiste = await repositorioPessoa.findOne({ where: {login: login} });
-        
-        if(emailExiste) {
-            throw new ErrosDaAplicacao('Email ja cadastrado', 400);
-        }
+
     }
-    protected async validarCamposEndereco({codigoBairro,nomeRua,numero,complemento,cep,status}:IEndereco){
+    protected async validarCamposEndereco({codigoBairro,nomeRua,numero,complemento,cep}:IEndereco){
 
         if(!codigoBairro){
             throw new ErrosDaAplicacao('Codigo bairro nao encontrado', 400);
@@ -74,10 +69,6 @@ export class Servicos{
         if(!cep){
             throw new ErrosDaAplicacao('Codigo bairro nao encontrado', 400);
         }
-        if(!status){
-            throw new ErrosDaAplicacao('Codigo bairro nao encontrado', 400);
-        }
-
     }
     protected obterRepositorioPessoa(){
         return this.repositorios.pessoaRepositorio;
@@ -94,6 +85,14 @@ export class Servicos{
         return status === 1 || status === 2;
     }
 
+    protected async listarTodosOsDados() {
+        const pessoas = await this.repositorios.pessoaRepositorio.find({
+            relations:['enderecos', 
+            "enderecos.codigoBairro",
+            "enderecos.codigoBairro.codigoMunicipio",
+            "enderecos.codigoBairro.codigoMunicipio.codigoUF"]})
+        return pessoas;
+    }
     protected listarTodasPessoas(pessoas: Pessoa[]){
 
         return pessoas.map((pessoa) => ({
@@ -104,7 +103,7 @@ export class Servicos{
             login: pessoa.login,
             senha: pessoa.senha,
             status: pessoa.status,
-            enderecos: pessoa.enderecos
+            enderecos: []
         }));
     }
 }

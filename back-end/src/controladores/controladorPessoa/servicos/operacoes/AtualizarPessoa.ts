@@ -21,12 +21,10 @@ interface IEndereco {
     numero: number;
     complemento: string;
     cep: string;
-    status: number;
     codigoPessoa?: { codigoPessoa: number };
 }
 
 export class AtualizarPessoa extends Servicos{
-    
     
     constructor(repositorio: IRepositorios) {
         super(repositorio);    
@@ -37,32 +35,38 @@ export class AtualizarPessoa extends Servicos{
             const { codigoPessoa, nome, sobrenome, idade, login, senha, status, enderecos } = dadosPessoa;
             const pessoaRepositorio = this.obterRepositorioPessoa();
 
+            await this.validaTodosOsCampos({nome, sobrenome, idade, login, senha, status});
             const pessoaExistente = await pessoaRepositorio.findOne({ where: { codigoPessoa }, relations: ["enderecos"] });
 
             if (!pessoaExistente) {
                 throw new ErrosDaAplicacao('Pessoa não encontrada', 400);
             }
+
+            if (login && login !== pessoaExistente.login) {
+                const emailExiste = await pessoaRepositorio.findOne({ where: { login:login } });
             
-            if(login && pessoaExistente.login !== login){
-                const loginExiste = await pessoaRepositorio.findOne({where:{login:login}});
-                if(loginExiste){
-                    throw new ErrosDaAplicacao('Login ja usando por outra pessoa', 400);
+                if (emailExiste) {
+                    throw new ErrosDaAplicacao('Email já cadastrado', 400);
                 }
-                pessoaExistente.nome = nome || pessoaExistente.nome;
-                pessoaExistente.sobrenome = sobrenome || pessoaExistente.sobrenome;
-                pessoaExistente.idade = idade || pessoaExistente.idade;
-                pessoaExistente.login = login || pessoaExistente.login;
-                pessoaExistente.senha = senha || pessoaExistente.senha;
-                pessoaExistente.status = status || pessoaExistente.status;
             }
+
+            pessoaExistente.nome = nome || pessoaExistente.nome;
+            pessoaExistente.sobrenome = sobrenome || pessoaExistente.sobrenome;
+            pessoaExistente.idade = idade || pessoaExistente.idade;
+            pessoaExistente.login = login || pessoaExistente.login;
+            pessoaExistente.senha = senha || pessoaExistente.senha;
+            pessoaExistente.status = status || pessoaExistente.status;
 
             if (enderecos) {
                 const enderecoRepositorio = this.obterRepositorioEndereco();
                 const bairroRepositorio = this.obterRepositorioBairro();
 
                 for (const endereco of enderecos) {
-                    const { codigoEndereco, codigoBairro, nomeRua, numero, complemento, cep, status } = endereco;
 
+                    const { codigoEndereco, codigoBairro, nomeRua, numero, complemento, cep } = endereco;
+
+                    await this.validarCamposEndereco({ codigoBairro, nomeRua, numero, complemento, cep });
+                    
                     const bairroExiste = await bairroRepositorio.findOne({ where: { codigoBairro: endereco.codigoBairro.codigoBairro } });
 
                     if (!bairroExiste) {
@@ -82,7 +86,6 @@ export class AtualizarPessoa extends Servicos{
                     enderecoExiste.cep = cep;
                     
                     pessoaExistente.enderecos.push(enderecoExiste);
-
                     await enderecoRepositorio.save(enderecoExiste);
                 }
             }
@@ -104,6 +107,5 @@ export class AtualizarPessoa extends Servicos{
                 return resposta.status(500).json({ mensagem: 'Erro interno no Servidor', status: 500, error});
             }
         }    
-
     }  
 }

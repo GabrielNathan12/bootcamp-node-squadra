@@ -21,7 +21,6 @@ interface IEndereco {
     numero: number;
     complemento: string;
     cep: string;
-    status: number;
     codigoPessoa?: { codigoPessoa: number };
 }
 
@@ -41,6 +40,12 @@ export class CriarPessoa extends Servicos{
             const repositorioEndereco = this.obterRepositorioEndereco();
 
             const criptografar = await hash(senha, 8);
+            
+            const emailExiste = await repositorioPessoa.findOne({ where: {login: login} });
+        
+            if(emailExiste) {
+                throw new ErrosDaAplicacao('Email ja cadastrado', 400);
+            }
 
             const novaPessoa = repositorioPessoa.create({
                 nome: nome,
@@ -57,8 +62,8 @@ export class CriarPessoa extends Servicos{
 
                 for (const endereco of enderecos) {
                     
-                    const {codigoBairro,nomeRua,numero,complemento,cep,status} = endereco;
-                    await this.validarCamposEndereco({codigoBairro,nomeRua,numero,complemento,cep,status});
+                    const {codigoBairro,nomeRua,numero,complemento,cep} = endereco;
+                    await this.validarCamposEndereco({codigoBairro,nomeRua,numero,complemento,cep});
                     
                     const bairroExiste = await repositorioBairro.findOne({ where: { codigoBairro: endereco.codigoBairro.codigoBairro } });
 
@@ -87,7 +92,9 @@ export class CriarPessoa extends Servicos{
                 relations: ["enderecos"],
             });
 
-            return resposta.status(200).json(pessoasComEnderecos);
+            const todoasPessoas = this.listarTodasPessoas(pessoasComEnderecos);
+
+            return resposta.status(200).json(todoasPessoas);
         } 
         catch (error) {
             if(error instanceof ErrosDaAplicacao){
