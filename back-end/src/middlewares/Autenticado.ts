@@ -12,7 +12,7 @@ export function eAutenticado(requisicao: Request, resposta: Response, proximo: N
     const pessoaAutenticado = requisicao.headers.authorization;
     
     if(!pessoaAutenticado){
-        return resposta.status(400).json({mensagem: 'Login nao informado', status:'400'});
+        return resposta.status(400).json({mensagem: 'Login nao informado', status:400});
     }
 
     const [, token] = pessoaAutenticado.split(' ');
@@ -28,6 +28,6 @@ export function eAutenticado(requisicao: Request, resposta: Response, proximo: N
 
         return proximo();
     }catch(error){
-        return resposta.status(400).json({mensagem: 'Token recebido invalido', status: '400'});
+        return resposta.status(400).json({mensagem: 'Login nao informado', status: 400});
     }
 }

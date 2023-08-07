@@ -1,20 +1,21 @@
 import { Request, Response } from "express";
-import { IRepositorios } from "../../../Irepositorios/Irepositorios";
+import { IRepositorios } from "../../../../Irepositorios/Irepositorios";
+import { Servicos } from "../Servicos";
+
 interface IListaFiltrada{
     codigoPessoa?: number,
     login?:string,
     status?: number,
-
 }
-export class ListarPessoa{
-    private repositorios: IRepositorios;
-    
+
+export class ListarPessoa extends Servicos{
+
     constructor(repositorio: IRepositorios) {
-        this.repositorios = repositorio;
+        super(repositorio);
     }
-    
+
     public async listarPessoas(requisicao:Request, resposta: Response){
-        const pessoaRepositorio = this.repositorios.pessoaRepositorio;
+        const pessoaRepositorio = this.obterRepositorioPessoa();
         
         const {codigoPessoa,login,status} = requisicao.query;
         
@@ -38,24 +39,7 @@ export class ListarPessoa{
                     relations: ["enderecos"]
                 });
 
-                const todasAsPessoas = pessoas.map((pessoa) =>({
-                    codigoPessoa: pessoa.codigoPessoa,
-                    nome: pessoa.nome,
-                    sobrenome: pessoa.sobrenome,
-                    idade: pessoa.idade,
-                    login: pessoa.login,
-                    senha: pessoa.senha,
-                    status: pessoa.status,
-
-                    enderecos: pessoa.enderecos.map((endereco)=>({
-                        codigoEndereco: endereco.codigoEndereco,
-                        nomeRua: endereco.nomeRua,
-                        numero: endereco.numero,
-                        complemento: endereco.complemento,
-                        cep: endereco.cep,
-                        status: endereco.status
-                    }))
-                }));
+                const todasAsPessoas = this.listarTodasPessoas(pessoas);
 
                 return resposta.status(200).json(todasAsPessoas);
 
@@ -84,33 +68,18 @@ export class ListarPessoa{
                 }
 
             }
+            const repositorioPessoa = this.obterRepositorioPessoa();
             
-            const pessoas = await this.repositorios.pessoaRepositorio.find({
+            const pessoas = await repositorioPessoa.find({
                 where: filtarPessoa,
                 select: ["codigoPessoa", "nome", "sobrenome", "idade", "login", "senha","status" , "enderecos"],
                 relations: ["enderecos"]
             });
 
-            const todasAsPessoas = pessoas.map((pessoa) =>({
-                codigoPessoa: pessoa.codigoPessoa,
-                nome: pessoa.nome,
-                sobrenome: pessoa.sobrenome,
-                idade: pessoa.idade,
-                login: pessoa.login,
-                senha: pessoa.senha,
-                status: pessoa.status,
+            const todasAsPessoas = this.listarTodasPessoas(pessoas);
 
-                enderecos: pessoa.enderecos.map((endereco)=>({
-                    codigoEndereco: endereco.codigoEndereco,
-                    nomeRua: endereco.nomeRua,
-                    numero: endereco.numero,
-                    complemento: endereco.complemento,
-                    cep: endereco.cep,
-                    status: endereco.status
-                }))
-            }));
-                
-                return resposta.status(200).json(todasAsPessoas);
+            return resposta.status(200).json(todasAsPessoas);
+
         }
         catch(error){
             return resposta.status(400).json({ mensagem: 'Erro ao filtrar as pessoas', status: '400'+ error });

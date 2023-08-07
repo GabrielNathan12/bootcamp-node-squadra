@@ -36,7 +36,7 @@ export class ListaEndereco{
         else{
             try{
                 const enderecos = await enderecoReposito.find({
-                    select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep", "status"],
+                    select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep"],
                     relations:["codigoPessoa", "codigoBairro"]
                 });
 
@@ -48,7 +48,6 @@ export class ListaEndereco{
                     numero: endereco.numero,
                     complemento: endereco.complemento,
                     cep: endereco.cep,
-                    status: endereco.status
                 }));
 
                 return resposta.status(200).json(todosEnderecos);
@@ -98,7 +97,7 @@ export class ListaEndereco{
             }
             const enderecos = await this.repositorios.enderecoRepositorio.find({
                 where: filtarEnderecos,
-                select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep", "status"],
+                select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep"],
                 relations:["codigoPessoa", "codigoBairro"]
             });
 
@@ -110,7 +109,6 @@ export class ListaEndereco{
                 numero: endereco.numero,
                 complemento: endereco.complemento,
                 cep: endereco.cep,
-                status: endereco.status
             }));
 
             return resposta.status(200).json(todosEnderecos);

@@ -1,21 +1,21 @@
 import { Request, Response } from "express";
-import { IRepositorios } from "../../../Irepositorios/Irepositorios";
+import { IRepositorios } from "../../../../Irepositorios/Irepositorios";
+import { Servicos } from "../Servicos";
 
-interface IListaFiltrada{
+interface IBairro{
     codigoBairro?: number,
     codigoMunicipio?: number,
     nome?: string, 
     status?: number
 }
-export class ListarBairro{
-    private repositorios: IRepositorios;
+export class ListarBairro extends Servicos{
 
     constructor(repositorio:IRepositorios){
-        this.repositorios = repositorio;
+        super(repositorio);
     }
 
     public async listarBairro(requisicao: Request, resposta: Response){
-        const repositorioBairro = this.repositorios.bairroRepositorio;
+        const repositorioBairro = this.getRepositorio();
         const {codigoBairro,codigoMunicipio ,nome, status} = requisicao.query;
 
         if(codigoBairro || codigoMunicipio ||nome || status){
@@ -33,24 +33,17 @@ export class ListarBairro{
                     select:["codigoBairro", "codigoMunicipio", "nome", "status"], 
                     relations:["codigoMunicipio"]
                 });
-                const todosBairros = bairros.map((bairro) => ({
-                    codigoBairro: bairro.codigoBairro,
-                    codigoMunicipio: bairro.codigoMunicipio.codigoMunicipio,
-                    nome: bairro.nome,
-                    status: bairro.status
-                }));
-                return resposta.status(200).json(todosBairros);
+                const todosBairros = this.listarBairros(bairros);
 
+                return resposta.status(200).json(todosBairros);
             }
             catch(error){
                 return resposta.status(400).json({mensagem: "Erro ao listar os bairros", error})
             }
-
-        }
-        
+        }    
     }
 
-    private async listaFiltrada({codigoBairro,codigoMunicipio ,nome, status}: IListaFiltrada, requisicao: Request, resposta: Response){
+    private async listaFiltrada({codigoBairro,codigoMunicipio ,nome, status}: IBairro, requisicao: Request, resposta: Response){
         try{
             let filtarBairros: any ={};
 
@@ -71,21 +64,20 @@ export class ListarBairro{
                 }
             }
 
-            const bairrosFiltrados = await this.repositorios.bairroRepositorio.find({
+            const bairroRepositorio = this.getRepositorio();
+
+            const bairrosFiltrados = await bairroRepositorio.find({
                 where:filtarBairros, select:['codigoBairro',"codigoMunicipio",'nome', "status"], 
                 relations: ["codigoMunicipio"]
             });
             
-            const todosBairros= bairrosFiltrados.map((bairro)=> ({
-                codigoBairro: bairro.codigoBairro,
-                codigoMunicipio: bairro.codigoMunicipio.codigoMunicipio,
-                nome: bairro.nome,
-                status: bairro.status
-            }));
+            const todosBairros = this.listarBairros(bairrosFiltrados);
 
             return resposta.status(200).json(todosBairros);
-        }catch(error){
-            return resposta.status(400).json({mensagem: 'Erro ao filtrar os Bairros', status:400, error})
+
+        }
+        catch(error){
+            return resposta.status(400).json({mensagem: 'Erro ao filtrar os Bairros', status: 400, error})
         }
     }
 }

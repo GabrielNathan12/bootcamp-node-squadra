@@ -20,7 +20,7 @@ import { Pessoa } from "./Pessoa";
         @Column({name: 'NOME_RUA', type: 'varchar'})
             nomeRua: string;
         
-        @Column({name: 'NUMERO', type: 'number'})
+        @Column({name: 'NUMERO', type: 'varchar'})
             numero: Number;
         
         @Column({name:'COMPLEMENTO', type: 'varchar'})
@@ -28,7 +28,5 @@ import { Pessoa } from "./Pessoa";
         
         @Column({name: 'CEP', type:'varchar'})
             cep: string;
-        @Column({name: 'STATUS', type:'number'})
-            status: number;
     }
 

@@ -1,9 +1,9 @@
 import { Request, Response } from "express-serve-static-core";
 import { IRepositorios } from "../../Irepositorios/Irepositorios";
-import { ListarUFs } from "./servicos/ListarUFs";
-import { CriarUF } from "./servicos/CriarUF";
-import { AtualizarUF } from "./servicos/AtualizarUF";
-import { DeletarUF } from "./servicos/DeletarUF";
+import { ListarUFs } from "./servicos/operacoes/ListarUFs";
+import { CriarUF } from "./servicos/operacoes/CriarUF";
+import { AtualizarUF } from "./servicos/operacoes/AtualizarUF";
+import { DeletarUF } from "./servicos/operacoes/DeletarUF";
 
 
 export class ControladorUF{
@@ -15,51 +15,37 @@ export class ControladorUF{
 
     public async litarUF(requisicao: Request, resposta: Response){
         try{
-
             const listaUf = new ListarUFs(this.repositorios);
             
-            const ufs = await listaUf.listarUf(requisicao, resposta);
-    
-            return ufs;
+            await listaUf.listarUf(requisicao, resposta);
             
-        }catch(error){
-            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
+        }
+        catch(error){
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: 500, error});
         }
        
     }
 
     public async criarUf(requisicao: Request, resposta: Response){
         try{
-            const {nome, sigla, status} = requisicao.body;
-
-            const criarUF = new CriarUF(this.repositorios);
-            const uf = await criarUF.criarNovoUF({nome,sigla, status}, requisicao, resposta);
-        
-            return uf;
-        }catch(error){
-            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
+           const {nome, sigla, status} = requisicao.body;
+           const servicos = new CriarUF(this.repositorios);
+           await servicos.criarNovoUF({nome, sigla, status}, requisicao, resposta);
+        }
+        catch(error){
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: 500, error});
         }
     }
 
     public async atualizarUf(requisicao: Request, resposta: Response){
         try{
             const {codigoUF ,nome, sigla, status} = requisicao.body;
-            const atualizarUF = new AtualizarUF(this.repositorios);
+            const servicos = new AtualizarUF(this.repositorios);
             
-            /*if(!this.verificaQtdSiglas(sigla)){
-                return resposta.status(400).json({mensagem: 'Sigla invalida', status: '400'});
-            }
-            if(!Number(status)){
-                return resposta.status(400).json({mensagem: "Status nao e um numero", status: 400});
-            }
-            if(!this.verificaStatus(Number(status))){
-                return resposta.status(400).json({mensagem: 'Status do campo invalido', status: '400'});
-            } */
-            const uf = await atualizarUF.atualizarUf({codigoUF, nome, sigla, status}, requisicao, resposta);
+            await servicos.atualizarUf({codigoUF, nome, sigla, status}, requisicao, resposta);
             
-            return uf;
         }catch(error){
-            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: 500, error});
         }
     }
 
@@ -71,7 +57,7 @@ export class ControladorUF{
 
             return deletado;
         }catch(error){
-            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: '500', error});
+            return resposta.status(500).json({mensagem: 'Erro interno no Servidor', status: 500, error});
         }
     }
 

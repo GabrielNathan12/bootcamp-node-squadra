@@ -20,8 +20,8 @@ const rotaMunicipio = Router();
 const ControladorGeral = new ControladorMunicipio(repositorios);
 
 rotaMunicipio.get('/municipio',(requisicao: Request, resposta: Response)=> ControladorGeral.listarMunicipio(requisicao, resposta));
-rotaMunicipio.post('/municipio',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.criarMunicipio(requisicao, resposta));
-rotaMunicipio.put('/municipio',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarMunicipio(requisicao, resposta));
-rotaMunicipio.delete('/municipio/:codigoMunicipio',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.deletarMunicipio(requisicao, resposta));
+rotaMunicipio.post('/municipio',(requisicao: Request, resposta: Response)=> ControladorGeral.criarMunicipio(requisicao, resposta));
+rotaMunicipio.put('/municipio',(requisicao: Request, resposta: Response)=> ControladorGeral.atualizarMunicipio(requisicao, resposta));
+rotaMunicipio.delete('/municipio/:codigoMunicipio',(requisicao: Request, resposta: Response)=> ControladorGeral.deletarMunicipio(requisicao, resposta));
 
 export default rotaMunicipio;
