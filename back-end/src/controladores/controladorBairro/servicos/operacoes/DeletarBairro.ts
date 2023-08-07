@@ -13,7 +13,7 @@ export class DeletarBairro extends Servicos{
     }
     
     public async deletarBairro({codigoBairro}: IBairro, requisicao: Request, resposta: Response){
-        const bairroRepositorio = this.getRepositorio();
+        const bairroRepositorio = this.obterRepositorio();
 
         const bairroExiste = await bairroRepositorio.find({where: {codigoBairro: codigoBairro}});
 
@@ -24,8 +24,8 @@ export class DeletarBairro extends Servicos{
         await bairroRepositorio.remove(bairroExiste);
 
         const bairros = await bairroRepositorio.find({
-            select:["codigoBairro", "codigoMunicipio", "nome", "status"], 
-            relations:["codigoMunicipio"]
+            select:["codigoBairro", "municipio", "nome", "status"], 
+            relations:["municipio"]
         });
 
         const todosBairros = this.listarBairros(bairros);

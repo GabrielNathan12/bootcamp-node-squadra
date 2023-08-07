@@ -9,11 +9,11 @@ import { Endereco } from "./Endereco";
             codigoBairro: number;
         @ManyToOne(() => Municipio, (municipio) => municipio.bairros,{onDelete:"CASCADE"})
         @JoinColumn({name:'CODIGO_MUNICIPIO'})
-            codigoMunicipio: Municipio;
+            municipio: Municipio;
         @Column({name: 'NOME', type:'varchar'})
             nome: string;
         @Column({name: 'STATUS', type:'int'})
             status: number;
-        @OneToMany(() => Endereco, (endereco) => endereco.codigoBairro)
+        @OneToMany(() => Endereco, (endereco) => endereco.bairro)
             enderecos: Endereco[];
     }

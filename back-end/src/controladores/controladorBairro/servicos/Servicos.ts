@@ -44,11 +44,11 @@ export class Servicos{
         }
       }
 
-    protected getRepositorio(){
+    protected obterRepositorio(){
         return this.repositorios.bairroRepositorio;
     }
 
-    protected getRepositorioMunicipio(){
+    protected obterRepositorioMunicipio(){
         return this.repositorios.municipioRepositorio;
     }
 
@@ -60,7 +60,7 @@ export class Servicos{
 
         return bairros.map((bairro) => ({
             codigoBairro: bairro.codigoBairro,
-            codigoMunicipio: bairro.codigoMunicipio.codigoMunicipio,
+            codigoMunicipio: bairro.municipio.codigoMunicipio,
             nome: bairro.nome,
             status: bairro.status
         }));

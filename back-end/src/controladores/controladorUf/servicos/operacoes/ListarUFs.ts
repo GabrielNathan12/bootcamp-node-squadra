@@ -61,7 +61,7 @@ export class ListarUFs extends Servicos{
                
             }
             
-            const ufsFiltrados = await this.getRepositorios().find({ where: filtarDados});
+            const ufsFiltrados = await this.obterRepositorioUF().find({ where: filtarDados});
             
             return resposta.status(200).json(ufsFiltrados);
 

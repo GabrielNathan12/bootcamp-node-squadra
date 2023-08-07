@@ -30,9 +30,9 @@ export class ListarMunicipio extends Servicos{
                     nome: nome as string, status: Number(status)}, requisicao, resposta);
         }
         else {
-            const municipios = await this.getRepositorio().find({
-                select: ["codigoMunicipio", "nome", "status", "codigoUF"],
-                relations: ["codigoUF"]
+            const municipios = await this.obterRepositorioMunicipio().find({
+                select: ["codigoMunicipio", "nome", "status", "uf"],
+                relations: ["uf"]
             });
             const todosMunicipios = this.listarMunicipios(municipios);
 
@@ -62,10 +62,10 @@ export class ListarMunicipio extends Servicos{
                 }
             }
             
-            const municipiosFiltrados = await this.getRepositorio().find({
+            const municipiosFiltrados = await this.obterRepositorioMunicipio().find({
                 where:filtrarMunicipio,  
-                select: ["codigoMunicipio", "nome", "status", "codigoUF"],
-                relations: ["codigoUF"]
+                select: ["codigoMunicipio", "nome", "status", "uf"],
+                relations: ["uf"]
             });
 
             const todosMunicipios = this.listarMunicipios(municipiosFiltrados);

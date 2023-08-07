@@ -24,8 +24,8 @@ export class DeletarEndereco extends Servicos{
 
 
             const enderecos = await enderecoReposito.find({
-                    select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep"],
-                    relations:["codigoPessoa", "codigoBairro"]
+                    select:["codigoEndereco", "pessoa", "bairro", "nomeRua" , "numero", "complemento", "cep"],
+                    relations:["pessoa", "bairro"]
             });
 
             const todosEnderecos = this.listarTodosEnderecos(enderecos);

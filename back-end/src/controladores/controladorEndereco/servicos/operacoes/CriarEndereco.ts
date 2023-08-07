@@ -56,15 +56,15 @@ export class CriarEndereco extends Servicos{
             await this.validaTodosOsCampus({codigoPessoa, codigoBairro, nomeRua, numero, complemento, cep , status});
 
             const novoEndereco = enderecoReposito.create({
-                codigoPessoa:{codigoPessoa}, codigoBairro:{codigoBairro},
+                pessoa:{codigoPessoa}, bairro:{codigoBairro},
                 nomeRua: nomeRua, numero:numero, complemento:complemento, cep:cep
             });
 
             await enderecoReposito.save(novoEndereco);
 
             const enderecos = await enderecoReposito.find({
-                select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep"],
-                relations:["codigoPessoa", "codigoBairro"]
+                select:["codigoEndereco", "pessoa", "bairro", "nomeRua" , "numero", "complemento", "cep"],
+                relations:["pessoa", "bairro"]
             });
 
             const todosEnderecos = this.listarTodosEnderecos(enderecos);

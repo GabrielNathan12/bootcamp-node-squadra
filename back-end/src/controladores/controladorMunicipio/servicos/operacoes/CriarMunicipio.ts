@@ -18,19 +18,19 @@ export class CriarMunicipio extends Servicos{
     
     public async criarNovoMunicipio({codigoUF, nome, status}: IMunicipio, requisicao: Request, resposta: Response){
         try{
-            const repositorioMunicipio = this.getRepositorio();
+            const repositorioMunicipio = this.obterRepositorioMunicipio();
 
             await this.validaTodosOsCampus({codigoUF, nome, status});
 
             const novoMuncipio = repositorioMunicipio.create({
-                codigoUF: {codigoUF:codigoUF}, nome: nome, status: status
+                uf: {codigoUF:codigoUF}, nome: nome, status: status
             });
     
             await repositorioMunicipio.save(novoMuncipio);
   
             const municipios = await repositorioMunicipio.find({
-                select: ["codigoMunicipio", "nome", "status", "codigoUF"],
-                relations: ["codigoUF"]
+                select: ["codigoMunicipio", "nome", "status", "uf"],
+                relations: ["uf"]
             });
             const todosMunicipios = this.listarMunicipios(municipios);
 

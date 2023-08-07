@@ -36,8 +36,8 @@ export class AtualizarBairro extends Servicos{
             throw new ErrosDaAplicacao(`Status do campo inválido: Motivo = ${status}`, 400);
         }
     
-        const repositorioBairro = this.getRepositorio();
-        const repositorioMunicipio = this.getRepositorioMunicipio();
+        const repositorioBairro = this.obterRepositorio();
+        const repositorioMunicipio = this.obterRepositorioMunicipio();
     
         const bairro = await repositorioBairro.findOne({ where: { codigoBairro: codigoBairro } });
     
@@ -59,7 +59,7 @@ export class AtualizarBairro extends Servicos{
             throw new ErrosDaAplicacao('Bairro já cadastrado nesse Municipio', 400);
         }
     
-        bairro.codigoMunicipio = municipioExiste;
+        bairro.municipio = municipioExiste;
         bairro.nome = nome;
         bairro.status = status;
     
@@ -74,11 +74,11 @@ export class AtualizarBairro extends Servicos{
     public async atualizarBairro({codigoBairro, codigoMunicipio, nome, status}: IBairro, requisicao: Request, resposta: Response){
         try{
             await this.validaTodosOsCampus({codigoBairro, codigoMunicipio, nome, status})
-            const bairroRepositorio = this.getRepositorio();
+            const bairroRepositorio = this.obterRepositorio();
             
             const bairros = await bairroRepositorio.find({
-                select: ["codigoBairro", "nome", "status", "codigoMunicipio"],
-                relations: ["codigoMunicipio"]
+                select: ["codigoBairro", "nome", "status", "municipio"],
+                relations: ["municipio"]
             });
 
             const todosBairros = this.listarBairros(bairros);

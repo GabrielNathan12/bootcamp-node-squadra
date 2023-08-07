@@ -30,8 +30,8 @@ export class ListaEndereco extends Servicos{
         else{
             try{
                 const enderecos = await enderecoReposito.find({
-                    select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep"],
-                    relations:["codigoPessoa", "codigoBairro"]
+                    select:["codigoEndereco", "pessoa", "bairro", "nomeRua" , "numero", "complemento", "cep"],
+                    relations:["pessoa", "bairro"]
                 });
 
                 const todosEnderecos = this.listarTodosEnderecos(enderecos);
@@ -73,8 +73,8 @@ export class ListaEndereco extends Servicos{
             }
             const enderecos = await this.obterRepositorioEndereco().find({
                 where: filtarEnderecos,
-                select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep"],
-                relations:["codigoPessoa", "codigoBairro"]
+                select:["codigoEndereco", "pessoa", "bairro", "nomeRua" , "numero", "complemento", "cep"],
+                relations:["pessoa", "bairro"]
             });
 
             const todosEnderecos = this.listarTodosEnderecos(enderecos);

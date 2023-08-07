@@ -17,7 +17,7 @@ export class AtualizarUF extends Servicos{
     }
 
     protected async validarTodosOsCampus({codigoUF, nome, sigla, status}: IUF){
-        const repositorioUF = this.getRepositorios();
+        const repositorioUF = this.obterRepositorioUF();
         
         if(!codigoUF || isNaN(codigoUF)){
             throw new ErrosDaAplicacao(`Campo codigoUF invalido, Motivo: ${codigoUF}`, 400);
@@ -56,7 +56,7 @@ export class AtualizarUF extends Servicos{
         uf.sigla = sigla;
         uf.status = status;
 
-        await this.getRepositorios().save(uf);
+        await this.obterRepositorioUF().save(uf);
         
     }
     

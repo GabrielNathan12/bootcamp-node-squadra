@@ -13,7 +13,7 @@ export class DeletarMunicipio extends Servicos{
     }
     
     public async deletarMunicipio({codigoMunicipio}: IMunicipio, requisicao: Request, resposta: Response){
-        const municipioRepositorio = this.getRepositorio();
+        const municipioRepositorio = this.obterRepositorioMunicipio();
         const municipioExiste = await municipioRepositorio.find({where: {codigoMunicipio: codigoMunicipio}});
 
         if(!municipioExiste){
@@ -22,9 +22,9 @@ export class DeletarMunicipio extends Servicos{
         
         await municipioRepositorio.remove(municipioExiste);
 
-        const municipios = await this.getRepositorio().find({
-            select: ["codigoMunicipio", "nome", "status", "codigoUF"],
-            relations: ["codigoUF"]
+        const municipios = await this.obterRepositorioMunicipio().find({
+            select: ["codigoMunicipio", "nome", "status", "uf"],
+            relations: ["uf"]
         });
 
         const todosMunicipios = this.listarMunicipios(municipios);

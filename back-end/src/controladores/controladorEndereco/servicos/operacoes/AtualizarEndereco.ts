@@ -41,8 +41,8 @@ export class AtualizarEndereco extends Servicos{
             if(!pessoaExiste){
                 throw new ErrosDaAplicacao('Pessoa nao encontrado', 400);
             }
-            enderecoExiste.codigoPessoa = pessoaExiste;
-            enderecoExiste.codigoBairro = bairroExiste;
+            enderecoExiste.pessoa = pessoaExiste;
+            enderecoExiste.bairro = bairroExiste;
             enderecoExiste.nomeRua = nomeRua;
             enderecoExiste.numero = numero;
             enderecoExiste.complemento = complemento;
@@ -51,8 +51,8 @@ export class AtualizarEndereco extends Servicos{
             await enderecoReposito.save(enderecoExiste);
 
             const enderecos = await enderecoReposito.find({
-                select:["codigoEndereco", "codigoPessoa", "codigoBairro", "nomeRua" , "numero", "complemento", "cep"],
-                relations:["codigoPessoa", "codigoBairro"]
+                select:["codigoEndereco", "pessoa", "bairro", "nomeRua" , "numero", "complemento", "cep"],
+                relations:["pessoa", "bairro"]
             });
 
             const todosEnderecos = this.listarTodosEnderecos(enderecos);

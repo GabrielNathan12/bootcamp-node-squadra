@@ -15,7 +15,7 @@ export class ListarBairro extends Servicos{
     }
 
     public async listarBairro(requisicao: Request, resposta: Response){
-        const repositorioBairro = this.getRepositorio();
+        const repositorioBairro = this.obterRepositorio();
         const {codigoBairro,codigoMunicipio ,nome, status} = requisicao.query;
 
         if(codigoBairro || codigoMunicipio ||nome || status){
@@ -30,8 +30,8 @@ export class ListarBairro extends Servicos{
         else{
             try{
                 const bairros = await repositorioBairro.find({
-                    select:["codigoBairro", "codigoMunicipio", "nome", "status"], 
-                    relations:["codigoMunicipio"]
+                    select:["codigoBairro", "municipio", "nome", "status"], 
+                    relations:["municipio"]
                 });
                 const todosBairros = this.listarBairros(bairros);
 
@@ -64,11 +64,11 @@ export class ListarBairro extends Servicos{
                 }
             }
 
-            const bairroRepositorio = this.getRepositorio();
+            const bairroRepositorio = this.obterRepositorio();
 
             const bairrosFiltrados = await bairroRepositorio.find({
-                where:filtarBairros, select:['codigoBairro',"codigoMunicipio",'nome', "status"], 
-                relations: ["codigoMunicipio"]
+                where:filtarBairros, select:['codigoBairro',"municipio",'nome', "status"], 
+                relations: ["municipio"]
             });
             
             const todosBairros = this.listarBairros(bairrosFiltrados);

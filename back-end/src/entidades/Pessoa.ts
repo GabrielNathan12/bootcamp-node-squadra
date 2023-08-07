@@ -17,7 +17,7 @@ import { Endereco } from "./Endereco";
             senha: string;
         @Column({name: 'STATUS', type: 'int'})
             status: number;
-        @OneToMany(() => Endereco, (endereco) => endereco.codigoPessoa)
+        @OneToMany(() => Endereco, (endereco) => endereco.pessoa)
             enderecos: Endereco[];
 
 }

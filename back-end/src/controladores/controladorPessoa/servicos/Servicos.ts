@@ -88,9 +88,9 @@ export class Servicos{
     protected async listarTodosOsDados() {
         const pessoas = await this.repositorios.pessoaRepositorio.find({
             relations:['enderecos', 
-            "enderecos.codigoBairro",
-            "enderecos.codigoBairro.codigoMunicipio",
-            "enderecos.codigoBairro.codigoMunicipio.codigoUF"]})
+            "enderecos.bairro",
+            "enderecos.bairro.municipio",
+            "enderecos.bairro.municipio.uf"]})
         return pessoas;
     }
     protected listarTodasPessoas(pessoas: Pessoa[]){

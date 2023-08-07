@@ -36,8 +36,8 @@ export class AtualizarMunicipio extends Servicos{
             throw new ErrosDaAplicacao(`Status do campo inválido: Motivo = ${status}`, 400);
         }
     
-        const repositorioMunicipio = this.getRepositorio();
-        const repositorioUF = this.getRepositorioUf();
+        const repositorioMunicipio = this.obterRepositorioMunicipio();
+        const repositorioUF = this.obterRepositorioUf();
     
         const municipio = await repositorioMunicipio.findOne({ where: { codigoMunicipio: codigoMunicipio } });
     
@@ -59,7 +59,7 @@ export class AtualizarMunicipio extends Servicos{
             throw new ErrosDaAplicacao('Município já cadastrado nesse UF', 400);
         }
     
-        municipio.codigoUF = ufExiste;
+        municipio.uf = ufExiste;
         municipio.nome = nome;
         municipio.status = status;
     
@@ -76,11 +76,11 @@ export class AtualizarMunicipio extends Servicos{
 
         try{
             await this.validaTodosOsCampus({codigoMunicipio, codigoUF, nome, status})
-            const repositorioMunicipio = this.getRepositorio();
+            const repositorioMunicipio = this.obterRepositorioMunicipio();
             
             const municipios = await repositorioMunicipio.find({
-                select: ["codigoMunicipio", "nome", "status", "codigoUF"],
-                relations: ["codigoUF"]
+                select: ["codigoMunicipio", "nome", "status", "uf"],
+                relations: ["uf"]
             });
 
             const todosMunicipios = this.listarMunicipios(municipios);

@@ -79,7 +79,7 @@ export class AtualizarPessoa extends Servicos{
                         throw new ErrosDaAplicacao('Endereço não encontrado', 400);
                     }
 
-                    enderecoExiste.codigoBairro = bairroExiste;
+                    enderecoExiste.bairro = bairroExiste;
                     enderecoExiste.nomeRua = nomeRua;
                     enderecoExiste.numero = numero;
                     enderecoExiste.complemento = complemento;

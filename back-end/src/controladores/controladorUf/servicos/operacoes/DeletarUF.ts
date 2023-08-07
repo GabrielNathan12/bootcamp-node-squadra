@@ -14,13 +14,13 @@ export class DeletarUF extends Servicos{
     }
     public async deletarUF({codigoUF}: IUF, resposta: Response){
         
-        const ufExiste = await this.getRepositorios().find({where: {codigoUF: codigoUF}});
+        const ufExiste = await this.obterRepositorioUF().find({where: {codigoUF: codigoUF}});
 
         if(!ufExiste){
             throw new ErrosDaAplicacao('codigoUF nao existe no Banco de Dados', 400);
         }
         
-        await this.getRepositorios().remove(ufExiste);
+        await this.obterRepositorioUF().remove(ufExiste);
 
         return resposta.status(200).json(await this.listarUfs());
     }

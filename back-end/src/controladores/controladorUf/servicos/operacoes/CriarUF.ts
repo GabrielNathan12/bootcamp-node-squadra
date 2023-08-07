@@ -17,7 +17,7 @@ export class CriarUF extends Servicos{
 
     public async criarNovoUF({nome, sigla, status}:IUF, requisicao: Request, resposta: Response){
         try{
-            const repositorioUF =  this.getRepositorios();
+            const repositorioUF =  this.obterRepositorioUF();
 
             await this.validarTodosOsCampus({nome, sigla, status});
 

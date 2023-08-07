@@ -16,17 +16,17 @@ export class Servicos{
         this.repositorios = repositorios;
     }
 
-    protected getRepositorio(){
+    protected obterRepositorioMunicipio(){
         return this.repositorios.municipioRepositorio;
     }
 
-    protected getRepositorioUf(){
+    protected obterRepositorioUf(){
         return this.repositorios.ufRepositorio;
     }
 
     protected async validaTodosOsCampus({codigoUF, nome, status}: IMunicipio){
-        const repositorioMunicipio = this.getRepositorio();
-        const repositorioUF = this.getRepositorioUf();
+        const repositorioMunicipio = this.obterRepositorioMunicipio();
+        const repositorioUF = this.obterRepositorioUf();
 
         const ufExiste = await repositorioUF.findOne({where: {codigoUF: codigoUF}});
 
@@ -58,7 +58,7 @@ export class Servicos{
 
         return municipios.map((municipio) => ({
             codigoMunicipio: municipio.codigoMunicipio,
-            codigoUF: municipio.codigoUF.codigoUF,
+            codigoUF: municipio.uf.codigoUF,
             nome: municipio.nome,
             status: municipio.status
         }));

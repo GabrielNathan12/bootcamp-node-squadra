@@ -58,7 +58,8 @@ const Pessoa = () => {
         </div>
         <div className="form-control">
           <label htmlFor="status">Status:</label>
-          <input type="text" name="status" value={status} placeholder="Digite o status" onChange={(e) => setStatus(e.target.value)} />
+          <input type="text" name="status" value={status} 
+          min={1} max={2} placeholder="Digite o status" onChange={(e) => setStatus(e.target.value)} />
         </div>
         <button type="submit" onClick={criarPessoa}>
           Enviar

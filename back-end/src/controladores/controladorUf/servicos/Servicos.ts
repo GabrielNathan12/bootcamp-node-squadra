@@ -15,12 +15,12 @@ export class Servicos{
         this.repositorios = repositorios;
     }
 
-    protected getRepositorios(){
+    protected obterRepositorioUF(){
         return this.repositorios.ufRepositorio;
     }
 
     protected async validarTodosOsCampus({nome, sigla, status}: IUF){
-        const repositorioUF =  this.getRepositorios();
+        const repositorioUF =  this.obterRepositorioUF();
 
         if(!nome){
             throw new ErrosDaAplicacao('Campo nome nao encontrado', 400);

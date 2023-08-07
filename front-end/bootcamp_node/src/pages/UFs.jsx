@@ -49,7 +49,7 @@ const UFs = () => {
         </div>
         <div className="form-control">
           <label htmlFor="status">Status:</label>
-          <input type="number" id="status" placeholder="Digite o Status" min={0} max={1} value={status} onChange={(e) => setStatus(e.target.value)} />
+          <input type="number" id="status" placeholder="Digite o Status" min={1} max={2} value={status} onChange={(e) => setStatus(e.target.value)} />
         </div>
         <button type="submit" onClick={criarUF}>
           Enviar

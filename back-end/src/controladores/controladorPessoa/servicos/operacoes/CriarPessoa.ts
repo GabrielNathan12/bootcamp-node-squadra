@@ -72,12 +72,12 @@ export class CriarPessoa extends Servicos{
                     }
 
                     const novoEndereco: Endereco = repositorioEndereco.create({
-                        codigoBairro: bairroExiste,
+                        bairro: bairroExiste,
                         nomeRua: endereco.nomeRua,
                         numero: endereco.numero,
                         complemento: endereco.complemento,
                         cep: endereco.cep,
-                        codigoPessoa: novaPessoa
+                        pessoa: novaPessoa
                     });
 
                     novaPessoa.enderecos.push(novoEndereco);

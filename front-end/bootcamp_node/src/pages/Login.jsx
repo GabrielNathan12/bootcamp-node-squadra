@@ -18,6 +18,7 @@ const Login = () => {
     
     try {
       await ConectarBackend.post('/autenticar', novoLogin);
+      
       alert("Login realizado com sucesso");
       navegacao('/');
     }

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { IRepositorios } from "../../../../Irepositorios/Irepositorios";
 import { ErrosDaAplicacao } from "../../../../errosAplicacao/ErrosDaAplicacao";
-import { ListarBairro } from "./ListarBairro";
 import { Servicos } from "../Servicos";
 
 interface IBairro {
@@ -18,12 +17,12 @@ export class CriarBairro extends Servicos{
 
     public async criarBairro({codigoMunicipio, nome, status}: IBairro,requisicao: Request, resposta: Response ) {
       try {
-        const repositorioBairro = this.getRepositorio();
+        const repositorioBairro = this.obterRepositorio();
 
         await this.validarTodosOsCampus({codigoMunicipio, nome, status});
 
           const novoBairro = repositorioBairro.create({
-            codigoMunicipio: { codigoMunicipio: codigoMunicipio },
+            municipio: { codigoMunicipio: codigoMunicipio },
             nome: nome,
             status: status,
         });
@@ -31,8 +30,8 @@ export class CriarBairro extends Servicos{
         await repositorioBairro.save(novoBairro);
 
         const bairros = await repositorioBairro.find({
-          select:["codigoBairro", "codigoMunicipio", "nome", "status"], 
-          relations:["codigoMunicipio"]
+          select:["codigoBairro", "municipio", "nome", "status"], 
+          relations:["municipio"]
         });
 
         const todosBairros = this.listarBairros(bairros);

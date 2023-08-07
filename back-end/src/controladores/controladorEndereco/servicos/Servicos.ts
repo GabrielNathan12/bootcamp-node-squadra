@@ -23,8 +23,8 @@ export class Servicos{
 
         return enderecos.map((endereco) => ({
             codigoEndereco: endereco.codigoEndereco,
-            codigoPessoa: endereco.codigoPessoa,
-            codigoBairro: endereco.codigoBairro.codigoBairro,
+            codigoPessoa: endereco.pessoa,
+            codigoBairro: endereco.bairro.codigoBairro,
             nomeRua: endereco.nomeRua,
             numero: endereco.numero,
             complemento: endereco.complemento,
