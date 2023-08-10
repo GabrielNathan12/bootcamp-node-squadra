@@ -31,7 +31,7 @@ __decorate([
     __metadata("design:type", Number)
 ], UF.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Municipio_1.Municipio, (municipio) => municipio.codigoUF),
+    (0, typeorm_1.OneToMany)(() => Municipio_1.Municipio, (municipio) => municipio.uf),
     __metadata("design:type", Array)
 ], UF.prototype, "municipios", void 0);
 exports.UF = UF = __decorate([

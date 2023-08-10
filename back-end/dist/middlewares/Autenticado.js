@@ -9,7 +9,7 @@ const autores_1 = __importDefault(require("../configuracoes/autores"));
 function eAutenticado(requisicao, resposta, proximo) {
     const pessoaAutenticado = requisicao.headers.authorization;
     if (!pessoaAutenticado) {
-        return resposta.status(400).json({ mensagem: 'JWT nao existe token', status: '400' });
+        return resposta.status(400).json({ mensagem: 'Login nao informado', status: 400 });
     }
     const [, token] = pessoaAutenticado.split(' ');
     try {
@@ -21,7 +21,7 @@ function eAutenticado(requisicao, resposta, proximo) {
         return proximo();
     }
     catch (error) {
-        return resposta.status(400).json({ mensagem: 'Token recebido invalido', status: '400' });
+        return resposta.status(400).json({ mensagem: 'Login nao informado', status: 400 });
     }
 }
 exports.eAutenticado = eAutenticado;

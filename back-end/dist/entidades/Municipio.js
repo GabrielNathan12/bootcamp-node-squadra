@@ -23,7 +23,7 @@ __decorate([
     (0, typeorm_1.ManyToOne)(() => UF_1.UF, (codigoUF) => codigoUF.municipios, { onDelete: "CASCADE" }),
     (0, typeorm_1.JoinColumn)({ name: 'Codigo_UF' }),
     __metadata("design:type", UF_1.UF)
-], Municipio.prototype, "codigoUF", void 0);
+], Municipio.prototype, "uf", void 0);
 __decorate([
     (0, typeorm_1.Column)({ name: 'NOME', type: 'varchar' }),
     __metadata("design:type", String)
@@ -33,7 +33,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Municipio.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Bairro_1.Bairro, (bairro) => bairro.codigoMunicipio),
+    (0, typeorm_1.OneToMany)(() => Bairro_1.Bairro, (bairro) => bairro.municipio),
     __metadata("design:type", Array)
 ], Municipio.prototype, "bairros", void 0);
 exports.Municipio = Municipio = __decorate([

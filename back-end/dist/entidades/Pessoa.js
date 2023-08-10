@@ -31,7 +31,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Pessoa.prototype, "idade", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'LOGIN', type: 'varchar', unique: true }),
+    (0, typeorm_1.Column)({ name: 'LOGIN', type: 'varchar' }),
     __metadata("design:type", String)
 ], Pessoa.prototype, "login", void 0);
 __decorate([
@@ -43,7 +43,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Pessoa.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Endereco_1.Endereco, (endereco) => endereco.codigoPessoa),
+    (0, typeorm_1.OneToMany)(() => Endereco_1.Endereco, (endereco) => endereco.pessoa),
     __metadata("design:type", Array)
 ], Pessoa.prototype, "enderecos", void 0);
 exports.Pessoa = Pessoa = __decorate([
