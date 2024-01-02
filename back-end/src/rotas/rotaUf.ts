@@ -1,29 +1,24 @@
 import { Router, Request, Response } from "express";
-import { ControladorUF } from "../controladores/controladorUf/ControladorUf";
-import { ufRepositorio } from "../repositorios/ufRepositorio";
-import { bairroRepositorio } from "../repositorios/bairroRepositorio";
-import { municipioRepositorio } from "../repositorios/municipioRepositorio";
-import { enderecoRepositorio } from "../repositorios/enderecosRepositorio";
-import { pessoaRepositorio } from "../repositorios/pessoaRepositorio";
-import { IRepositorios } from "../Irepositorios/Irepositorios";
-import { eAutenticado } from "../middlewares/Autenticado";
+import { ControladorUF } from "../sistema/controlador/controladorUf/controladorUf";
 
 const rotaUf = Router();
 
-const repositorios: IRepositorios = {
-    ufRepositorio,
-    bairroRepositorio,
-    municipioRepositorio,
-    enderecoRepositorio,
-    pessoaRepositorio,
+const ufControlador = new ControladorUF();
 
-};
+rotaUf.get('/uf', (requisicao: Request, resposta: Response) => {
+    ufControlador.listarUf(requisicao, resposta);
+});
 
-const ControladorGeral = new ControladorUF(repositorios);
+rotaUf.post('/uf',(requisicao: Request, resposta: Response) => {
+    ufControlador.criarUf(requisicao, resposta);
+});
 
-rotaUf.get('/uf' ,(requisicao: Request, resposta: Response)=> ControladorGeral.litarUF(requisicao, resposta));
-rotaUf.post('/uf',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.criarUf(requisicao, resposta));
-rotaUf.put('/uf',eAutenticado, (requisicao: Request, resposta: Response)=> ControladorGeral.atualizarUf(requisicao, resposta));
-rotaUf.delete('/uf/:codigoUF',eAutenticado,(requisicao: Request, resposta: Response)=> ControladorGeral.deletarUf(requisicao, resposta));
+rotaUf.put('/uf',(requisicao: Request, resposta: Response) => {
+    ufControlador.atualizarUf(requisicao, resposta);
+});
+
+rotaUf.delete('/uf/:codigoUf',(requisicao: Request, resposta: Response) => {
+    ufControlador.deletarUf(requisicao, resposta);
+});
 
 export default rotaUf;
