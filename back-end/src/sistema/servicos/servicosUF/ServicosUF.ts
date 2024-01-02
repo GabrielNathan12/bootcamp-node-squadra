@@ -1,3 +1,4 @@
+import { Not, UpdateResult } from "typeorm";
 import { ufRepositorio } from "../../../banco_de_dados/repositorios/ufRepositorio";
 import { IUF } from "../../vo/IUF";
 
@@ -50,5 +51,30 @@ export class ServicosUF{
         
         return resultado;
 
+    }
+    public async existeDuplicatas(nome: string, sigla: string){
+        const resultado = await ufRepositorio.findOne({
+            where:[ {nome: nome}, {sigla:sigla}]
+        });
+        return resultado;
+    }
+
+    public async procurarUfPeloCodigoUF(codigoUF: number){
+        const resultado = await ufRepositorio.findOne({where: {codigoUF: codigoUF}});
+        return resultado;
+    }
+
+    public async atualizarUf(uf: IUF, codigoUF: number){
+        const repositorios = ufRepositorio;
+        
+        await repositorios.update(codigoUF, uf);
+
+        return await repositorios.find({});
+    }
+
+    public async deletarUf(codigoUF: number){
+        const repositorios = ufRepositorio;
+        repositorios.delete(codigoUF);
+        return await repositorios.find({});
     }
 }

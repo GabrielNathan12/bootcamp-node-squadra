@@ -17,7 +17,7 @@ rotaUf.put('/uf',(requisicao: Request, resposta: Response) => {
     ufControlador.atualizarUf(requisicao, resposta);
 });
 
-rotaUf.delete('/uf/:codigoUf',(requisicao: Request, resposta: Response) => {
+rotaUf.delete('/uf/:codigoUF',(requisicao: Request, resposta: Response) => {
     ufControlador.deletarUf(requisicao, resposta);
 });
 

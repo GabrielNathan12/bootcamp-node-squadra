@@ -18,7 +18,7 @@ export class ControladorUF{
         try {
             const uf = requisicao.body;
             await this.execoesApi.verificarCampusNulosCriacao(uf);
-            await this.execoesApi.vericartiposDeValoresCriacao(uf);
+            await this.execoesApi.vericarTiposDeValoresCriacao(uf);
 
             const novoUf: IUF = uf;
 
@@ -45,11 +45,62 @@ export class ControladorUF{
     }
 
     public async atualizarUf(requisicao: Request, resposta: Response){
+        try {
+            const uf = requisicao.body;
+            await this.execoesApi.verificarCampusNulosAtualizacao(uf);
+            await this.execoesApi.vericarTiposDeValoresAtualizacao(uf);
+            
+            const {codigoUF, nome, sigla} = uf;
 
+            const ufPeloCodigo = await this.servicos.procurarUfPeloCodigoUF(codigoUF);
+            await this.execoesApi.existeUfPeloCodigoUF(ufPeloCodigo);
+
+            const existeDuplicadas = await this.servicos.existeDuplicatas(nome, sigla);
+            await this.execoesApi.verificarDuplicadasAtualizacao(existeDuplicadas, codigoUF);
+            
+            const ufAtualizado: IUF = uf;
+            
+            const ufNovo = await this.servicos.atualizarUf(ufAtualizado, codigoUF);
+            
+            return resposta.status(200).json(ufNovo);
+
+        }
+        catch (error) {
+            if(error instanceof CampusNulos){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            if(error instanceof TipoVarivelInvalida){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            if(error instanceof DadosDuplicados){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            if(error instanceof RequisicaoMalFeita){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            return resposta.status(500).json({mensagem: "Erro no servidor interno " + error});
+        }
     }
+
     public async deletarUf(requisicao: Request, resposta: Response){
+        try {
+            const {codigoUF} = requisicao.params;
+            const existeUf = await this.servicos.procurarUfPeloCodigoUF(parseInt(codigoUF));
+            
+            await this.execoesApi.existeUfPeloCodigoUF(existeUf);
 
+            const ufDeletado = await this.servicos.deletarUf(parseInt(codigoUF));
+            return resposta.status(200).json(ufDeletado);
+
+
+        } catch (error) {
+            if(error instanceof RequisicaoMalFeita){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            return resposta.status(500).json({mensagem: "Erro no servidor interno " + error});
+        }
     }
+
     public async listarUf(requisicao: Request, resposta: Response){
         try {
             const parametros = requisicao.query;
