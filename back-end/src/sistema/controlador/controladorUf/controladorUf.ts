@@ -1,17 +1,16 @@
-import { Request, response } from "express";
-import { Response } from "express-serve-static-core";
-import { ExecoesAPI } from "../../execoes/ExecoesApi";
+import { Request, Response } from "express";
+import { ExecoesAPIUF } from "../../execoes/ExecoesAPIUF";
 import { ServicosUF } from "../../servicos/servicosUF/ServicosUF";
 import { IUF } from "../../vo/IUF";
-import { CampusNulos, DadosDuplicados, TipoVarivelInvalida } from "../../../configuracoes/helpers/ErrosApi";
+import { CampusNulos, DadosDuplicados, RequisicaoMalFeita, TipoVarivelInvalida } from "../../../configuracoes/helpers/ErrosApi";
 
 
 export class ControladorUF{
-    private execoesApi: ExecoesAPI;
+    private execoesApi: ExecoesAPIUF;
     private servicos: ServicosUF;
 
     constructor(){
-        this.execoesApi = new ExecoesAPI();
+        this.execoesApi = new ExecoesAPIUF();
         this.servicos = new ServicosUF();
     }
 
@@ -52,6 +51,23 @@ export class ControladorUF{
 
     }
     public async listarUf(requisicao: Request, resposta: Response){
-       
+        try {
+            const parametros = requisicao.query;
+
+            if(parametros){
+                await this.execoesApi.verificarParametrosValidos(parametros);
+                return resposta.status(200).json(await this.servicos.listarUfPorParametros(parametros));
+            }
+            else{
+                return resposta.status(200).json(await this.servicos.listarTodosUfs());
+            }
+        }
+        catch (error) {
+            if(error instanceof RequisicaoMalFeita){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            return resposta.status(500).json({mensagem: "Erro no servidor interno " + error});
+        }
+        
     }
 }

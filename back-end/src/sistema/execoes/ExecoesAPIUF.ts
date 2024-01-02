@@ -1,6 +1,6 @@
-import { CampusNulos, DadosDuplicados, TipoVarivelInvalida } from "../../configuracoes/helpers/ErrosApi";
+import { CampusNulos, DadosDuplicados, RequisicaoMalFeita, TipoVarivelInvalida } from "../../configuracoes/helpers/ErrosApi";
 
-export class ExecoesAPI{
+export class ExecoesAPIUF{
 
     public async verificarCampusNulosCriacao(uf:any){
         const {nome, sigla, status} = uf;
@@ -46,6 +46,20 @@ export class ExecoesAPI{
         }
         if(sigla !== null){
             throw new DadosDuplicados("Campo sigla já está registrado");
+        }
+    }
+
+    public async verificarParametrosValidos(parametros: any){
+        const chaves = ['codigoUF', 'nome', 'sigla', 'status'];
+
+        for(const chave in parametros){
+            if(!chaves.includes(chave)){
+                throw new RequisicaoMalFeita("Paramêtro não encontrado");
+            }
+        }
+
+        if(parametros.sigla && parametros.sigla.length !== 2){
+            throw new RequisicaoMalFeita("Sigla buscada não possui 2 caracteres");
         }
     }
 

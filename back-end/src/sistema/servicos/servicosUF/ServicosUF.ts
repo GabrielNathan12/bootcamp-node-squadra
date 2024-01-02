@@ -8,9 +8,9 @@ export class ServicosUF{
         const repositorios = ufRepositorio;
         repositorios.save(uf);
 
-        return await this.listarUf();
+        return await repositorios.find({});
     }
-    
+
     public async nomeUfExiste(nome:string){
         const uf = await ufRepositorio.findOne({where:{nome:nome}});
 
@@ -22,9 +22,33 @@ export class ServicosUF{
         return uf;
     }
 
-    public async listarUf(){
+    public async listarTodosUfs(){
         const repositorios = ufRepositorio;
-        repositorios.find();
-        return repositorios;
+        const lista = await repositorios.find({});
+        return lista;
+    }
+
+    public async listarUfPorParametros(parametros: any){
+        const repositorios = ufRepositorio;
+        
+        let condicoes: any = {};
+
+        if(parametros.codigoUF){
+            condicoes.codigoUF = parametros.codigoUF;
+        }
+        if(parametros.nome){
+            condicoes.nome = parametros.nome;
+        }
+        if(parametros.sigla){
+            condicoes.sigla = parametros.sigla;
+        }
+        if(parametros.status){
+            condicoes.status = parametros.status;
+        }
+
+        const resultado = await repositorios.find({where: condicoes});
+        
+        return resultado;
+
     }
 }
