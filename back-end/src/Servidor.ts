@@ -1,6 +1,7 @@
 import express from 'express';
 import {AppDataSource} from './data-source';
 import rotaUf from './rotas/rotaUf';
+import rotaMunicipio from './rotas/rotaMunicipio';
 
 
 
@@ -9,7 +10,7 @@ AppDataSource.initialize().then(()=>{
     servidor.use(express.json());
     //servidor.use(cors());
     servidor.use(rotaUf);
-    //servidor.use(rotaMunicipio);
+    servidor.use(rotaMunicipio);
     //servidor.use(rotaBairro);
     //servidor.use(rotaEndereco);
     //servidor.use(rotaPessoa);

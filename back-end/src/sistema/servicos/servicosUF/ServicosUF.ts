@@ -1,4 +1,3 @@
-import { Not, UpdateResult } from "typeorm";
 import { ufRepositorio } from "../../../banco_de_dados/repositorios/ufRepositorio";
 import { IUF } from "../../vo/IUF";
 

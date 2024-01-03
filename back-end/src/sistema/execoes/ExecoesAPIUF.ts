@@ -32,7 +32,7 @@ export class ExecoesAPIUF{
         }
 
         if(typeof status !== "number"){
-            throw new TipoVarivelInvalida("Campo status uf, não é uma string");
+            throw new TipoVarivelInvalida("Campo status uf, não é um number");
         }
 
         if(status != 1 && status != 2){
@@ -95,7 +95,7 @@ export class ExecoesAPIUF{
             throw new TipoVarivelInvalida("Campo sigla uf, possui mais de 2 caracteres");
         }
         if(typeof status !== "number"){
-            throw new TipoVarivelInvalida("Campo status uf, não é uma string");
+            throw new TipoVarivelInvalida("Campo status uf, não é um number");
         }
         if(status != 1 && status != 2){
             throw new TipoVarivelInvalida("Campo status uf, não é um valor válido");
