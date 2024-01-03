@@ -5,6 +5,7 @@ import { IMunicipio } from "../../vo/IMunicipio";
 import { CampusNulos, DadosDuplicados, RequisicaoMalFeita, TipoVarivelInvalida } from "../../../configuracoes/helpers/ErrosApi";
 
 
+
 export class ControladorMunicipio{
     private servicos: ServicosMunicipios;
     private execoesAPI: ExecoesAPIMunicipio;
@@ -21,15 +22,21 @@ export class ControladorMunicipio{
             await this.execoesAPI.verificarCampusNulosCriacao(municipio);
             await this.execoesAPI.vericarTiposDeValoresCriacao(municipio);
             
-            const {codigoUF, nome} = municipio;
-
+            const {codigoUF, nome, status} = municipio;
+            
             const ufExiste = await this.servicos.procurarUFPeloCodigoUF(codigoUF);         
             await this.execoesAPI.existeUFPeloCodigoUF(ufExiste);
+            
+            let existeDuplicata;
 
-            const existeDuplicata = await this.servicos.existeDuplicatasMunicipio(nome, ufExiste);
+            if(ufExiste){
+                existeDuplicata = await this.servicos.existeDuplicatasMunicipio(nome, ufExiste?.codigoUF);
+                console.log(existeDuplicata);
+            }
+            
             await this.execoesAPI.existeDuplicataMunicipio(existeDuplicata);
-
-            const novoMunicipio: IMunicipio = municipio;
+            
+            const novoMunicipio: IMunicipio = {codigoUF, nome, status};
 
             const municipioCriado = await this.servicos.criarNovoMunicipio(novoMunicipio);
 
@@ -71,10 +78,21 @@ export class ControladorMunicipio{
     }
     public async listarMunicipio(requisicao: Request, resposta: Response){
         try {
-            
+            const parametros = requisicao.query;
+
+            if(parametros){
+                await this.execoesAPI.verificarParametrosValidos(parametros);
+                return resposta.status(200).json(await this.servicos.listarMunicipioPorParametros(parametros));
+            }
+            else{
+                return resposta.status(200).json(await this.servicos.listarMunicipios());
+            }
         }
         catch (error) {
-            
+            if(error instanceof RequisicaoMalFeita){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            return resposta.status(500).json({mensagem: "Erro no servidor interno " + error});
         }
     }
 }

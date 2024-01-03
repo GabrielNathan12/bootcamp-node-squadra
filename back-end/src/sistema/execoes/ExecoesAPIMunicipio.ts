@@ -23,7 +23,7 @@ export class ExecoesAPIMunicipio{
     }
 
     public async existeDuplicataMunicipio(municipio: any){
-        if(municipio !== null){
+        if(municipio !== null && municipio !== undefined){
             throw new RequisicaoMalFeita("Existe já esse nome municipio registrado nesse codigoUF");
         }
     }

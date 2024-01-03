@@ -10,7 +10,7 @@ import { Bairro } from "./Bairro";
             codigoMunicipio: number;
         
         @ManyToOne(() => UF, (codigoUF) => codigoUF.municipios,{onDelete:"CASCADE"})
-        @JoinColumn({name: 'Codigo_UF'})
+        @JoinColumn({name: 'CODIGO_UF'})
             uf: UF;
         @Column({name: 'NOME', type:'varchar'})
             nome: string;
