@@ -65,10 +65,6 @@ export class ServicosMunicipios{
         return resultado;
         
     }
-
-    public async existeDuplicatasMunicipioAtualizacao(nome: string, uf: IUF, codigoMunicipio: number){
-       
-    }
     
     public async listarMunicipios(){
         const repositorio = municipioRepositorio;
@@ -78,7 +74,28 @@ export class ServicosMunicipios{
 
     public async listarMunicipioPorParametros(parametros: any){
         const repositorio = municipioRepositorio;
-        const lista = await repositorio.find({select :['codigoMunicipio', 'nome', 'status' , 'uf'], relations : ['uf']});
+        let condicoes: any = {};
+        
+        if(parametros.codigoMunicipio){
+            condicoes.codigoMunicipio = parametros.codigoMunicipio;
+        }
+        if(parametros.codigoUF){
+            condicoes.uf = {codigoUF: parametros.codigoUF};
+        }
+        if(parametros.nome){
+            condicoes.nome = parametros.nome;
+        }
+        if(parametros.status){
+            condicoes.status = parametros.status;
+        }
+        
+        const lista = await repositorio.find({where: condicoes, relations: ['uf']});
         return lista;
+    }
+
+    public async deletarMunicipio(codigoMunicipio: number){
+        const repositorio = municipioRepositorio;
+        repositorio.delete(codigoMunicipio);
+        return await repositorio.find({});
     }
 }

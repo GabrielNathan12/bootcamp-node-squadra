@@ -3,7 +3,7 @@ services:
   oracle-server-db:
     network_mode: bridge
     container_name: oracle-server-db
-    image: gvenzl/oracle-xe
+    image: gvenzl/oracle-xe:slim
     ports:
       - 1521:1521
     environment:

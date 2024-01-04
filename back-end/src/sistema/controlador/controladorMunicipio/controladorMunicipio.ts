@@ -98,10 +98,24 @@ export class ControladorMunicipio{
 
     public async deletarMunicipio(requisicao: Request, resposta: Response){
         try {
+
+            const {codigoMunicipio} = requisicao.params;
             
+            await this.servicos.procurarMunicipioPeloCodigoMunicipio(parseInt(codigoMunicipio));
+            await this.execoesAPI.existeMunicipioPeloCodigoMunicipio(codigoMunicipio);
+
+            const municipioDeletado = await this.servicos.deletarMunicipio(parseInt(codigoMunicipio));
+            return resposta.status(200).json(municipioDeletado);
+
         }
         catch (error) {
-            
+            if(error instanceof RequisicaoMalFeita){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            if(error instanceof QueryFailedError){
+                return resposta.status(400).json({mensagem: 'Parametro passado não é um numero'});
+            }
+            return resposta.status(500).json({mensagem: "Erro no servidor interno " + error});
         }
     }
     public async listarMunicipio(requisicao: Request, resposta: Response){
