@@ -1,8 +1,6 @@
-import { Not, QueryFailedError } from "typeorm";
 import { municipioRepositorio } from "../../../banco_de_dados/repositorios/municipioRepositorio";
 import { ufRepositorio } from "../../../banco_de_dados/repositorios/ufRepositorio";
 import { IMunicipio } from "../../vo/IMunicipio";
-import { IUF } from "../../vo/IUF";
 
 export class ServicosMunicipios{
 
@@ -14,7 +12,7 @@ export class ServicosMunicipios{
 
         await repositorio.save(novoMunicipio);
 
-        return await repositorio.find({});
+        return await this.listarMunicipios();
         
     }
 
@@ -45,7 +43,7 @@ export class ServicosMunicipios{
 
         await repositorioMunicipio.save(municipioExiste);
 
-        return await municipioRepositorio.find({});
+        return await this.listarMunicipios();
        
     }
 
@@ -68,8 +66,16 @@ export class ServicosMunicipios{
     
     public async listarMunicipios(){
         const repositorio = municipioRepositorio;
-        const lista = await repositorio.find({select :['codigoMunicipio', 'nome', 'status' , 'uf'], relations : ['uf']});
-        return lista;
+        const lista = await repositorio.find({select :['codigoMunicipio', 'nome', 'status'], relations : ['uf']});
+
+        const resultado = lista.map(item => ({
+            codigoMunicipio: item.codigoMunicipio,
+            codigoUF: item.uf.codigoUF,
+            nome: item.nome,
+            status: item.status,
+        }));
+
+        return resultado;
     }
 
     public async listarMunicipioPorParametros(parametros: any){
@@ -90,12 +96,20 @@ export class ServicosMunicipios{
         }
         
         const lista = await repositorio.find({where: condicoes, relations: ['uf']});
-        return lista;
+
+        const resultado = lista.map(item => ({
+            codigoMunicipio: item.codigoMunicipio,
+            codigoUF: item.uf.codigoUF,
+            nome: item.nome,
+            status: item.status,
+        }));
+
+        return resultado;
     }
 
     public async deletarMunicipio(codigoMunicipio: number){
         const repositorio = municipioRepositorio;
         repositorio.delete(codigoMunicipio);
-        return await repositorio.find({});
+        return await this.listarMunicipios();
     }
 }
