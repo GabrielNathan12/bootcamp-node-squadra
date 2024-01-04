@@ -15,7 +15,7 @@ export class CampusNulos extends ErrosApi{
 }
 
 
-export class CompusDuplicados extends ErrosApi{
+export class DuplicadasEncontradas extends ErrosApi{
     constructor(mensagem: string){
         super(mensagem, 400);
     }

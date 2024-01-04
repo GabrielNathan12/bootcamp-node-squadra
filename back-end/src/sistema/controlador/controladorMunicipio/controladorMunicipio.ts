@@ -3,6 +3,7 @@ import { ServicosMunicipios } from "../../servicos/servicosMunicipio/ServicosMun
 import { ExecoesAPIMunicipio } from "../../execoes/ExecoesAPIMunicipio";
 import { IMunicipio } from "../../vo/IMunicipio";
 import { CampusNulos, DadosDuplicados, RequisicaoMalFeita, TipoVarivelInvalida } from "../../../configuracoes/helpers/ErrosApi";
+import { QueryFailedError } from "typeorm";
 
 
 
@@ -31,7 +32,6 @@ export class ControladorMunicipio{
 
             if(ufExiste){
                 existeDuplicata = await this.servicos.existeDuplicatasMunicipio(nome, ufExiste?.codigoUF);
-                console.log(existeDuplicata);
             }
             
             await this.execoesAPI.existeDuplicataMunicipio(existeDuplicata);
@@ -62,12 +62,40 @@ export class ControladorMunicipio{
     
     public async atualizarMunicipio(requisicao: Request, resposta: Response){
         try {
-            
+            const municipio = requisicao.body;
+            const {codigoMunicipio, codigoUF, nome , status} = municipio;
+
+            await this.execoesAPI.verificarCampusNulosAtualizacao(municipio);
+            await this.execoesAPI.vericarTiposDeValoresAtualizacao(municipio);
+        
+            const municipioAtualizado: IMunicipio = {codigoMunicipio, codigoUF, nome, status};
+
+            const novoMunicipio = await this.servicos.atualizarMunicipio(municipioAtualizado, codigoMunicipio, codigoUF);
+            await this.execoesAPI.verificaAtualizacao(novoMunicipio);
+
+            return resposta.status(200).json(novoMunicipio);
         }
+
         catch (error) {
-            
+            if(error instanceof CampusNulos){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            if(error instanceof TipoVarivelInvalida){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            if(error instanceof DadosDuplicados){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            if(error instanceof RequisicaoMalFeita){
+                return resposta.status(error.statusCode).json({menssagem: error.message});
+            }
+            if(error instanceof QueryFailedError){
+                return resposta.status(400).json({mensagem: 'Existe um municipio com o mesmo nome para esse codigoUF'});
+            }
+            return resposta.status(500).json({mensagem: "Erro no servidor interno " + error});
         }
     }
+
     public async deletarMunicipio(requisicao: Request, resposta: Response){
         try {
             

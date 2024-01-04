@@ -21,7 +21,11 @@ export class ExecoesAPIMunicipio{
             throw new RequisicaoMalFeita("Não existe esse codigoUF registrado");
         }
     }
-
+    public async existeMunicipioPeloCodigoMunicipio(municipio: any){
+        if(municipio === null){   
+            throw new RequisicaoMalFeita("Não existe esse municipio registrado");
+        }
+    }
     public async existeDuplicataMunicipio(municipio: any){
         if(municipio !== null && municipio !== undefined){
             throw new RequisicaoMalFeita("Existe já esse nome municipio registrado nesse codigoUF");
@@ -103,9 +107,9 @@ export class ExecoesAPIMunicipio{
         }
     }
 
-    public async verificarDuplicadasAtualizacao(municipio: any, codigoMunicipio: number){
-        if(municipio && municipio.codigoMunicipio !== codigoMunicipio){
-            throw new DadosDuplicados("Campo nome municipio já está registrado nesse UF");
+    public async verificaAtualizacao(municipio: any){
+        if(municipio === null){
+            throw new RequisicaoMalFeita("codigoMunicipio ou codigoUF não encontrados");
         }
     }
     public async existeMunicipioPeloCodigomunicipio(municipio: any){
