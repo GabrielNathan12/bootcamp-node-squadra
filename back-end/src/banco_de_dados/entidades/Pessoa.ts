@@ -1,7 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Unique } from "typeorm";
 import { Endereco } from "./Endereco";
 
 @Entity('TB_PESSOA')
+@Unique(['login'])
+
     export class Pessoa{
         @PrimaryGeneratedColumn({name: 'CODIGO_PESSOA', type: 'int'})
             codigoPessoa: number;
